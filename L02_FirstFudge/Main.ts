@@ -15,7 +15,7 @@ namespace L02_FirstFudge {
         let cmpMesh: fudge.ComponentMesh = new fudge.ComponentMesh(mesh);
         node.addComponent(cmpMesh);
 
-        let coat: fudge.CoatColored = new fudge.CoatColored(new fudge.Color(1, 0, 1, 1));
+        let coat: fudge.CoatColored = new fudge.CoatColored(new fudge.Color(0, 0, 1, 1));
         let mtrHotPink: fudge.Material = new fudge.Material("SolidWhite", fudge.ShaderUniColor, coat);
         let cmpColor: fudge.ComponentMaterial = new fudge.ComponentMaterial(mtrHotPink);
         node.addComponent(cmpColor);
