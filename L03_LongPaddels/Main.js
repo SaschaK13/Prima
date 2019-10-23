@@ -3,6 +3,7 @@ var L03_LongPaddels;
 (function (L03_LongPaddels) {
     var fudge = FudgeCore;
     window.addEventListener("load", handleLoad);
+    window.addEventListener("keydown", movePaddels);
     let ball = new fudge.Node("Ball");
     let paddleLeft = new fudge.Node("PaddleLeft");
     let paddleRight = new fudge.Node("PaddleRight");
@@ -26,6 +27,22 @@ var L03_LongPaddels;
         L03_LongPaddels.viewport = new fudge.Viewport();
         L03_LongPaddels.viewport.initialize("Viewport", pong, cmpCamera, canvas);
         fudge.Debug.log(L03_LongPaddels.viewport);
+        L03_LongPaddels.viewport.draw();
+    }
+    function movePaddels(_event) {
+        if (_event.keyCode == 87) {
+            paddleLeft.cmpTransform.local.translateY(1);
+            paddleLeft.getComponent(fudge.ComponentMesh).pivot.translateY(1);
+        }
+        if (_event.keyCode == 83) {
+            paddleLeft.getComponent(fudge.ComponentMesh).pivot.translateY(-1);
+        }
+        if (_event.keyCode == 38) {
+            paddleRight.getComponent(fudge.ComponentMesh).pivot.translateY(1);
+        }
+        if (_event.keyCode == 40) {
+            paddleRight.getComponent(fudge.ComponentMesh).pivot.translateY(-1);
+        }
         L03_LongPaddels.viewport.draw();
     }
     function createPong() {

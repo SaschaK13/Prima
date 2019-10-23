@@ -2,6 +2,8 @@ namespace L03_LongPaddels {
     import fudge = FudgeCore;
 
     window.addEventListener("load", handleLoad);
+    window.addEventListener("keydown", movePaddels);
+
     export let viewport: fudge.Viewport;
 
     let ball: fudge.Node = new fudge.Node("Ball");
@@ -23,6 +25,7 @@ namespace L03_LongPaddels {
         /** POSITIONING **/
         paddleRight.cmpTransform.local.translateX(9);
         paddleLeft.cmpTransform.local.translateX(-9);
+       
 
         /** SCALING **/
         //paddleRight.cmpTransform.local.scaleY(5); --> verzerrt Koordinatensystem
@@ -34,6 +37,23 @@ namespace L03_LongPaddels {
         viewport.initialize("Viewport", pong, cmpCamera, canvas);
         fudge.Debug.log(viewport);
 
+        viewport.draw();
+    }
+
+    function movePaddels(_event: KeyboardEvent): void {
+        if (_event.keyCode == 87) {
+            paddleLeft.cmpTransform.local.translateY(1);
+            (paddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(1);
+        }
+        if (_event.keyCode == 83) {            
+            (paddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(-1);
+        }
+        if (_event.keyCode == 38) {            
+            (paddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(1);
+        }
+        if (_event.keyCode == 40) {        
+            (paddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(-1);
+        }
         viewport.draw();
     }
 
