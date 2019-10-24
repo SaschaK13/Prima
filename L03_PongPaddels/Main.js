@@ -3,7 +3,6 @@ var L03_LongPaddels;
 (function (L03_LongPaddels) {
     var fudge = FudgeCore;
     window.addEventListener("load", handleLoad);
-    window.addEventListener("keydown", movePaddels);
     let ball = new fudge.Node("Ball");
     let paddleLeft = new fudge.Node("PaddleLeft");
     let paddleRight = new fudge.Node("PaddleRight");
@@ -27,22 +26,7 @@ var L03_LongPaddels;
         L03_LongPaddels.viewport = new fudge.Viewport();
         L03_LongPaddels.viewport.initialize("Viewport", pong, cmpCamera, canvas);
         fudge.Debug.log(L03_LongPaddels.viewport);
-        L03_LongPaddels.viewport.draw();
-    }
-    function movePaddels(_event) {
-        if (_event.keyCode == 87) {
-            paddleLeft.cmpTransform.local.translateY(1);
-            paddleLeft.getComponent(fudge.ComponentMesh).pivot.translateY(1);
-        }
-        if (_event.keyCode == 83) {
-            paddleLeft.getComponent(fudge.ComponentMesh).pivot.translateY(-1);
-        }
-        if (_event.keyCode == 38) {
-            paddleRight.getComponent(fudge.ComponentMesh).pivot.translateY(1);
-        }
-        if (_event.keyCode == 40) {
-            paddleRight.getComponent(fudge.ComponentMesh).pivot.translateY(-1);
-        }
+        document.addEventListener("keydown", movePaddels);
         L03_LongPaddels.viewport.draw();
     }
     function createPong() {
@@ -74,6 +58,24 @@ var L03_LongPaddels;
         pong.appendChild(paddleLeft);
         pong.appendChild(paddleRight);
         return pong;
+    }
+    function movePaddels(_event) {
+        switch (_event.code) {
+            case fudge.KEYBOARD_CODE.ARROW_UP:
+                paddleRight.cmpTransform.local.translateY(0.5);
+                break;
+            case fudge.KEYBOARD_CODE.ARROW_DOWN:
+                paddleRight.cmpTransform.local.translateY(-0.5);
+                break;
+            case fudge.KEYBOARD_CODE.W:
+                paddleLeft.cmpTransform.local.translateY(0.5);
+                break;
+            case fudge.KEYBOARD_CODE.S:
+                paddleLeft.cmpTransform.local.translateY(-0.5);
+                break;
+        }
+        fudge.RenderManager.update();
+        L03_LongPaddels.viewport.draw();
     }
 })(L03_LongPaddels || (L03_LongPaddels = {}));
 //# sourceMappingURL=Main.js.map

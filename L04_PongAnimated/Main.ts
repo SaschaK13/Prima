@@ -1,9 +1,13 @@
-namespace L03_LongPaddels {
+namespace L04_PongAnimated {
+
+    interface KeyPress {
+        [code: string]: boolean;
+    }
+
     import fudge = FudgeCore;
+    let keysPressed: KeyPress = { };
 
     window.addEventListener("load", handleLoad);
-    window.addEventListener("keydown", movePaddels);
-
     export let viewport: fudge.Viewport;
 
     let ball: fudge.Node = new fudge.Node("Ball");
@@ -37,23 +41,36 @@ namespace L03_LongPaddels {
         viewport.initialize("Viewport", pong, cmpCamera, canvas);
         fudge.Debug.log(viewport);
 
+        document.addEventListener("keydown", handleKeydown);
+        document.addEventListener("keyup", handleKeyup);
+
         viewport.draw();
+
+        // setInterval(handler, milliseconds);
+        // requestAnimationFrame(handler);
+        fudge.Loop.addEventListener(fudge.EVENT.LOOP_FRAME, update);
+        fudge.Loop.start();
     }
 
-    function movePaddels(_event: KeyboardEvent): void {
-        if (_event.keyCode == 87) {
-            paddleLeft.cmpTransform.local.translateY(1);
-            (paddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(1);
+    function update(_event: Event): void {
+        //fudge.Debug.log(keysPressed);
+
+        if (keysPressed[fudge.KEYBOARD_CODE.W] == true) {
+            paddleLeft.cmpTransform.local.translateY(0.3);
+        } 
+        if (keysPressed[fudge.KEYBOARD_CODE.S] == true) {
+            paddleLeft.cmpTransform.local.translateY(-0.3);
         }
-        if (_event.keyCode == 83) {            
-            (paddleLeft.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(-1);
+        if (keysPressed[fudge.KEYBOARD_CODE.ARROW_UP] == true) {
+            paddleRight.cmpTransform.local.translateY(0.3);
         }
-        if (_event.keyCode == 38) {            
-            (paddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(1);
+        if (keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN] == true) {
+            paddleRight.cmpTransform.local.translateY(-0.3);
         }
-        if (_event.keyCode == 40) {        
-            (paddleRight.getComponent(fudge.ComponentMesh) as fudge.ComponentMesh).pivot.translateY(-1);
-        }
+
+        ball.cmpTransform.local.translateX(0.05);
+
+        fudge.RenderManager.update();
         viewport.draw();
     }
 
@@ -96,5 +113,13 @@ namespace L03_LongPaddels {
         pong.appendChild(paddleRight);
 
         return pong;
+    }
+
+    function handleKeyup(_event: KeyboardEvent): void {
+        keysPressed[_event.code] = false;
+    }
+
+    function handleKeydown(_event: KeyboardEvent): void {
+        keysPressed[_event.code] = true;
     }
 }
