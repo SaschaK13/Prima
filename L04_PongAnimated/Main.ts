@@ -7,6 +7,13 @@ namespace L04_PongAnimated {
     import fudge = FudgeCore;
     let keysPressed: KeyPress = { };
 
+    let direction: fudge.Vector3;
+    let randomX: number;
+    let randomY: number;
+
+    let canvasLength: number = 9;
+    let canvasHeight: number = 7;
+
     window.addEventListener("load", handleLoad);
     export let viewport: fudge.Viewport;
 
@@ -30,11 +37,15 @@ namespace L04_PongAnimated {
         paddleRight.cmpTransform.local.translateX(9);
         paddleLeft.cmpTransform.local.translateX(-9);
        
-
         /** SCALING **/
         //paddleRight.cmpTransform.local.scaleY(5); --> verzerrt Koordinatensystem
         (<fudge.ComponentMesh> paddleRight.getComponent(fudge.ComponentMesh)).pivot.scaleY(5);
         (<fudge.ComponentMesh> paddleLeft.getComponent(fudge.ComponentMesh)).pivot.scaleY(5); //like "as"
+
+        /** BALL **/
+        randomX = getSign() * Math.random();
+        randomY = getSign() * Math.random();
+        direction = new fudge.Vector3(randomX, randomY, 0);
 
         /** VIEWPORT **/
         viewport = new fudge.Viewport();
@@ -68,10 +79,24 @@ namespace L04_PongAnimated {
             paddleRight.cmpTransform.local.translateY(-0.3);
         }
 
-        ball.cmpTransform.local.translateX(0.05);
+        ball.cmpTransform.local.translate(direction);
+
+        if (ball.cmpTransform.local.translation.x > canvasLength || ball.cmpTransform.local.translation.x < - canvasLength) {
+           randomX = - randomX;
+           direction = new fudge.Vector3(randomX, randomY, 0);
+        }
+
+        if (ball.cmpTransform.local.translation.y > canvasHeight || ball.cmpTransform.local.translation.y < - canvasHeight) {
+            randomY = - randomY;
+            direction = new fudge.Vector3(randomX, randomY, 0);
+        }
 
         fudge.RenderManager.update();
         viewport.draw();
+    }
+
+    function getSign(): number {
+        return Math.random() < 0.5 ? -1 : 1;
     }
 
     function createPong(): fudge.Node {

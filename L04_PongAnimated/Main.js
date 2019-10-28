@@ -3,6 +3,11 @@ var L04_PongAnimated;
 (function (L04_PongAnimated) {
     var fudge = FudgeCore;
     let keysPressed = {};
+    let direction;
+    let randomX;
+    let randomY;
+    let canvasLength = 9;
+    let canvasHeight = 7;
     window.addEventListener("load", handleLoad);
     let ball = new fudge.Node("Ball");
     let paddleLeft = new fudge.Node("PaddleLeft");
@@ -23,6 +28,10 @@ var L04_PongAnimated;
         //paddleRight.cmpTransform.local.scaleY(5); --> verzerrt Koordinatensystem
         paddleRight.getComponent(fudge.ComponentMesh).pivot.scaleY(5);
         paddleLeft.getComponent(fudge.ComponentMesh).pivot.scaleY(5); //like "as"
+        /** BALL **/
+        randomX = getSign() * Math.random();
+        randomY = getSign() * Math.random();
+        direction = new fudge.Vector3(randomX, randomY, 0);
         /** VIEWPORT **/
         L04_PongAnimated.viewport = new fudge.Viewport();
         L04_PongAnimated.viewport.initialize("Viewport", pong, cmpCamera, canvas);
@@ -49,9 +58,20 @@ var L04_PongAnimated;
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN] == true) {
             paddleRight.cmpTransform.local.translateY(-0.3);
         }
-        ball.cmpTransform.local.translateX(0.05);
+        ball.cmpTransform.local.translate(direction);
+        if (ball.cmpTransform.local.translation.x > canvasLength || ball.cmpTransform.local.translation.x < -canvasLength) {
+            randomX = -randomX;
+            direction = new fudge.Vector3(randomX, randomY, 0);
+        }
+        if (ball.cmpTransform.local.translation.y > canvasHeight || ball.cmpTransform.local.translation.y < -canvasHeight) {
+            randomY = -randomY;
+            direction = new fudge.Vector3(randomX, randomY, 0);
+        }
         fudge.RenderManager.update();
         L04_PongAnimated.viewport.draw();
+    }
+    function getSign() {
+        return Math.random() < 0.5 ? -1 : 1;
     }
     function createPong() {
         let pong = new fudge.Node("Pong");
