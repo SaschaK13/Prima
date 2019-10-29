@@ -40,7 +40,13 @@ namespace L04_PongAnimated {
         /** SCALING **/
         //paddleRight.cmpTransform.local.scaleY(5); --> verzerrt Koordinatensystem
         (<fudge.ComponentMesh> paddleRight.getComponent(fudge.ComponentMesh)).pivot.scaleY(5);
-        (<fudge.ComponentMesh> paddleLeft.getComponent(fudge.ComponentMesh)).pivot.scaleY(5); //like "as"
+        (<fudge.ComponentMesh> paddleRight.getComponent(fudge.ComponentMesh)).pivot.scaleX(0.5); //like "as"
+
+        (<fudge.ComponentMesh> paddleLeft.getComponent(fudge.ComponentMesh)).pivot.scaleY(5); 
+        (<fudge.ComponentMesh> paddleLeft.getComponent(fudge.ComponentMesh)).pivot.scaleX(0.5);
+
+        (<fudge.ComponentMesh> ball.getComponent(fudge.ComponentMesh)).pivot.scaleY(0.75);
+        (<fudge.ComponentMesh> ball.getComponent(fudge.ComponentMesh)).pivot.scaleX(0.75);
 
         /** BALL **/
         randomX = getSign() * Math.random();
@@ -66,6 +72,7 @@ namespace L04_PongAnimated {
     function update(_event: Event): void {
         //fudge.Debug.log(keysPressed);
 
+        /** CONTROLS **/
         if (keysPressed[fudge.KEYBOARD_CODE.W] == true) {
             paddleLeft.cmpTransform.local.translateY(0.3);
         } 
@@ -79,6 +86,7 @@ namespace L04_PongAnimated {
             paddleRight.cmpTransform.local.translateY(-0.3);
         }
 
+        /** MOVING BALL **/
         ball.cmpTransform.local.translate(direction);
 
         if (ball.cmpTransform.local.translation.x > canvasLength || ball.cmpTransform.local.translation.x < - canvasLength) {
@@ -96,7 +104,7 @@ namespace L04_PongAnimated {
     }
 
     function getSign(): number {
-        return Math.random() < 0.5 ? -1 : 1;
+        return Math.random() < 0.5 ? -1 : 1; //Math.random returns a number between 0 and 1, thats why I need the getSign function
     }
 
     function createPong(): fudge.Node {
