@@ -57,7 +57,18 @@ var L05_PongReflection;
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN] == true) {
             paddleRight.cmpTransform.local.translateY(-0.3);
         }
-        moveBall();
+        ball.cmpTransform.local.translate(ballSpeed);
+        if (detectHit(ball.cmpTransform.local.translation, topWall) == true || detectHit(ball.cmpTransform.local.translation, bottomWall) == true) {
+            randomY = -randomY;
+            ballSpeed = new fudge.Vector3(randomX, randomY, 0);
+        }
+        if (detectHit(ball.cmpTransform.local.translation, rightWall) == true || detectHit(ball.cmpTransform.local.translation, leftWall) == true) {
+            pong.removeChild(ball);
+        }
+        if (detectHit(ball.cmpTransform.local.translation, paddleLeft) == true || detectHit(ball.cmpTransform.local.translation, paddleRight) == true) {
+            randomX = -randomX;
+            ballSpeed = new fudge.Vector3(randomX, randomY, 0);
+        }
         fudge.RenderManager.update();
         L05_PongReflection.viewport.draw();
     }
@@ -76,28 +87,43 @@ var L05_PongReflection;
     function getSign() {
         return Math.random() < 0.5 ? -1 : 1; //Math.random returns a number between 0 and 1, thats why I need the getSign function
     }
-    // function detectHit(position: fudge.Vector3, mtxBox: fudge.Matrix4x4): boolean {
-    //     // let posBox: fudge.Vector3 = mtxBox.translation;
-    //     // let sclBox: fudge.Vector3 = mtxBox.scaling;
-    //     // sclBox.z = 0;
-    //     // sclBox.x *= -1;
-    //     // sclBox.scale(0.5);
-    //     return true;
-    // }
+    function detectHit(position, collisionObject) {
+        let collisionObjectScaling = collisionObject.getComponent(fudge.ComponentMesh).pivot.scaling;
+        let collisionObjectPosition = collisionObject.cmpTransform.local.translation;
+        let verticeTopLeft = new fudge.Vector3(collisionObjectPosition.x - (collisionObjectScaling.x / 2), collisionObjectPosition.y - (collisionObjectScaling.y / 2), 0);
+        let verticeBottomRight = new fudge.Vector3(collisionObjectPosition.x + (collisionObjectScaling.x / 2), collisionObjectPosition.y + (collisionObjectScaling.y / 2), 0);
+        if (position.x > verticeTopLeft.x && position.x < verticeBottomRight.x) {
+            if (position.y > verticeTopLeft.y && position.y < verticeBottomRight.y) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
     function createPong() {
         let meshQuad = new fudge.MeshQuad();
         let coat = new fudge.CoatColored(new fudge.Color(1, 0, 1, 1));
         let mtrHotPink = new fudge.Material("HotPink", fudge.ShaderUniColor, coat);
         let mtrSolidWhite = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(1, 1, 1, 1)));
         ball = createQuad("Ball", meshQuad, mtrSolidWhite, 0.75, 0.75, 0, 0);
-        paddleLeft = createQuad("PaddleLeft", meshQuad, mtrHotPink, 5, 0.5, -9, 0);
-        paddleRight = createQuad("PaddleRight", meshQuad, mtrHotPink, 5, 0.5, 9, 0);
-        leftWall = createQuad("LeftWall", meshQuad, mtrHotPink, 1, 20, 0, 7);
+        paddleLeft = createQuad("PaddleLeft", meshQuad, mtrSolidWhite, 5, 0.5, -8.5, 0);
+        paddleRight = createQuad("PaddleRight", meshQuad, mtrSolidWhite, 5, 0.5, 8.5, 0);
+        topWall = createQuad("TopWall", meshQuad, mtrHotPink, 1, 20, 0, 7);
+        bottomWall = createQuad("BottomWall", meshQuad, mtrHotPink, 1, 20, 0, -7);
+        leftWall = createQuad("LeftWall", meshQuad, mtrHotPink, 20, 1, -9.5, 0);
+        rightWall = createQuad("RightWall", meshQuad, mtrHotPink, 20, 1, 9.5, 0);
         /** append children **/
         pong.appendChild(ball);
         pong.appendChild(paddleLeft);
         pong.appendChild(paddleRight);
+        pong.appendChild(topWall);
+        pong.appendChild(bottomWall);
         pong.appendChild(leftWall);
+        pong.appendChild(rightWall);
         return pong;
     }
     function handleKeyup(_event) {
