@@ -1,12 +1,17 @@
 "use strict";
-var L04_PongAnimated;
-(function (L04_PongAnimated) {
+var L05_PongReflection;
+(function (L05_PongReflection) {
     var fudge = FudgeCore;
     let keysPressed = {};
     window.addEventListener("load", handleLoad);
-    let ball = new fudge.Node("Ball");
-    let paddleLeft = new fudge.Node("PaddleLeft");
-    let paddleRight = new fudge.Node("PaddleRight");
+    let pong = new fudge.Node("Pong");
+    let ball;
+    let paddleLeft;
+    let paddleRight;
+    let leftWall;
+    let rightWall;
+    let topWall;
+    let bottomWall;
     let ballSpeed;
     let randomX;
     let randomY;
@@ -21,28 +26,17 @@ var L04_PongAnimated;
         let cmpCamera = new fudge.ComponentCamera();
         cmpCamera.pivot.translate(new fudge.Vector3(0, 0, 20));
         cmpCamera.pivot.lookAt(new fudge.Vector3(0, 0, 0));
-        /** POSITIONING **/
-        paddleRight.cmpTransform.local.translateX(9);
-        paddleLeft.cmpTransform.local.translateX(-9);
-        /** SCALING **/
-        //paddleRight.cmpTransform.local.scaleY(5); --> verzerrt Koordinatensystem
-        paddleRight.getComponent(fudge.ComponentMesh).pivot.scaleY(5);
-        paddleRight.getComponent(fudge.ComponentMesh).pivot.scaleX(0.5); //like "as"
-        paddleLeft.getComponent(fudge.ComponentMesh).pivot.scaleY(5);
-        paddleLeft.getComponent(fudge.ComponentMesh).pivot.scaleX(0.5);
-        ball.getComponent(fudge.ComponentMesh).pivot.scaleY(0.75);
-        ball.getComponent(fudge.ComponentMesh).pivot.scaleX(0.75);
         /** BALL **/
         randomX = getSign() * Math.random();
         randomY = getSign() * Math.random();
         ballSpeed = new fudge.Vector3(randomX, randomY, 0);
         /** VIEWPORT **/
-        L04_PongAnimated.viewport = new fudge.Viewport();
-        L04_PongAnimated.viewport.initialize("Viewport", pong, cmpCamera, canvas);
-        fudge.Debug.log(L04_PongAnimated.viewport);
+        L05_PongReflection.viewport = new fudge.Viewport();
+        L05_PongReflection.viewport.initialize("Viewport", pong, cmpCamera, canvas);
+        fudge.Debug.log(L05_PongReflection.viewport);
         document.addEventListener("keydown", handleKeydown);
         document.addEventListener("keyup", handleKeyup);
-        L04_PongAnimated.viewport.draw();
+        L05_PongReflection.viewport.draw();
         // setInterval(handler, milliseconds);
         // requestAnimationFrame(handler);
         fudge.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
@@ -65,7 +59,7 @@ var L04_PongAnimated;
         }
         moveBall();
         fudge.RenderManager.update();
-        L04_PongAnimated.viewport.draw();
+        L05_PongReflection.viewport.draw();
     }
     function moveBall() {
         /** MOVING BALL **/
@@ -82,34 +76,28 @@ var L04_PongAnimated;
     function getSign() {
         return Math.random() < 0.5 ? -1 : 1; //Math.random returns a number between 0 and 1, thats why I need the getSign function
     }
+    // function detectHit(position: fudge.Vector3, mtxBox: fudge.Matrix4x4): boolean {
+    //     // let posBox: fudge.Vector3 = mtxBox.translation;
+    //     // let sclBox: fudge.Vector3 = mtxBox.scaling;
+    //     // sclBox.z = 0;
+    //     // sclBox.x *= -1;
+    //     // sclBox.scale(0.5);
+    //     return true;
+    // }
     function createPong() {
-        let pong = new fudge.Node("Pong");
         let meshQuad = new fudge.MeshQuad();
         let coat = new fudge.CoatColored(new fudge.Color(1, 0, 1, 1));
         let mtrHotPink = new fudge.Material("HotPink", fudge.ShaderUniColor, coat);
         let mtrSolidWhite = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(1, 1, 1, 1)));
-        /** BALL **/
-        let cmpMeshBall = new fudge.ComponentMesh(meshQuad);
-        let cmpMaterialBall = new fudge.ComponentMaterial(mtrSolidWhite);
-        ball.addComponent(cmpMeshBall);
-        ball.addComponent(cmpMaterialBall);
-        ball.addComponent(new fudge.ComponentTransform());
-        /** PADDLELEFT **/
-        let cmpMeshPadddleLeft = new fudge.ComponentMesh(meshQuad);
-        let cmpMaterialPaddleLeft = new fudge.ComponentMaterial(mtrHotPink);
-        paddleLeft.addComponent(cmpMeshPadddleLeft);
-        paddleLeft.addComponent(cmpMaterialPaddleLeft);
-        paddleLeft.addComponent(new fudge.ComponentTransform());
-        /** PADDLERIGHT **/
-        let cmpMeshPaddleRight = new fudge.ComponentMesh(meshQuad);
-        let cmpMaterialPaddleRight = new fudge.ComponentMaterial(mtrHotPink);
-        paddleRight.addComponent(cmpMeshPaddleRight);
-        paddleRight.addComponent(cmpMaterialPaddleRight);
-        paddleRight.addComponent(new fudge.ComponentTransform());
+        ball = createQuad("Ball", meshQuad, mtrSolidWhite, 0.75, 0.75, 0, 0);
+        paddleLeft = createQuad("PaddleLeft", meshQuad, mtrHotPink, 5, 0.5, -9, 0);
+        paddleRight = createQuad("PaddleRight", meshQuad, mtrHotPink, 5, 0.5, 9, 0);
+        leftWall = createQuad("LeftWall", meshQuad, mtrHotPink, 1, 20, 0, 7);
         /** append children **/
         pong.appendChild(ball);
         pong.appendChild(paddleLeft);
         pong.appendChild(paddleRight);
+        pong.appendChild(leftWall);
         return pong;
     }
     function handleKeyup(_event) {
@@ -118,5 +106,19 @@ var L04_PongAnimated;
     function handleKeydown(_event) {
         keysPressed[_event.code] = true;
     }
-})(L04_PongAnimated || (L04_PongAnimated = {}));
+    function createQuad(name, meshQuad, material, scaleX, scaleY, translateX, translateY) {
+        let node = new fudge.Node(name);
+        let cmpMesh = new fudge.ComponentMesh(meshQuad);
+        let cmpMaterial = new fudge.ComponentMaterial(material);
+        node.addComponent(cmpMesh);
+        node.addComponent(cmpMaterial);
+        node.addComponent(new fudge.ComponentTransform());
+        //paddleRight.cmpTransform.local.scaleY(5); --> verzerrt Koordinatensystem
+        node.getComponent(fudge.ComponentMesh).pivot.scaleY(scaleX);
+        node.getComponent(fudge.ComponentMesh).pivot.scaleX(scaleY);
+        node.cmpTransform.local.translateX(translateX);
+        node.cmpTransform.local.translateY(translateY);
+        return node;
+    }
+})(L05_PongReflection || (L05_PongReflection = {}));
 //# sourceMappingURL=Main.js.map

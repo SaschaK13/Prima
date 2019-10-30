@@ -1,4 +1,4 @@
-namespace L04_PongAnimated {
+namespace L05_PongReflection {
 
     interface KeyPress {
         [code: string]: boolean;
@@ -10,9 +10,15 @@ namespace L04_PongAnimated {
     window.addEventListener("load", handleLoad);
     export let viewport: fudge.Viewport;
 
-    let ball: fudge.Node = new fudge.Node("Ball");
-    let paddleLeft: fudge.Node = new fudge.Node("PaddleLeft");
-    let paddleRight: fudge.Node = new fudge.Node("PaddleRight");
+    let pong: fudge.Node = new fudge.Node("Pong");
+
+    let ball: fudge.Node;
+    let paddleLeft: fudge.Node;
+    let paddleRight: fudge.Node;
+    let leftWall: fudge.Node;
+    let rightWall: fudge.Node;
+    let topWall: fudge.Node;
+    let bottomWall: fudge.Node;
 
     let ballSpeed: fudge.Vector3;
     let randomX: number;
@@ -32,21 +38,6 @@ namespace L04_PongAnimated {
         let cmpCamera: fudge.ComponentCamera = new fudge.ComponentCamera();
         cmpCamera.pivot.translate(new fudge.Vector3(0, 0, 20));
         cmpCamera.pivot.lookAt(new fudge.Vector3(0, 0, 0));
-
-        /** POSITIONING **/
-        paddleRight.cmpTransform.local.translateX(9);
-        paddleLeft.cmpTransform.local.translateX(-9);
-       
-        /** SCALING **/
-        //paddleRight.cmpTransform.local.scaleY(5); --> verzerrt Koordinatensystem
-        (<fudge.ComponentMesh> paddleRight.getComponent(fudge.ComponentMesh)).pivot.scaleY(5);
-        (<fudge.ComponentMesh> paddleRight.getComponent(fudge.ComponentMesh)).pivot.scaleX(0.5); //like "as"
-
-        (<fudge.ComponentMesh> paddleLeft.getComponent(fudge.ComponentMesh)).pivot.scaleY(5); 
-        (<fudge.ComponentMesh> paddleLeft.getComponent(fudge.ComponentMesh)).pivot.scaleX(0.5);
-
-        (<fudge.ComponentMesh> ball.getComponent(fudge.ComponentMesh)).pivot.scaleY(0.75);
-        (<fudge.ComponentMesh> ball.getComponent(fudge.ComponentMesh)).pivot.scaleX(0.75);
 
         /** BALL **/
         randomX = getSign() * Math.random();
@@ -111,8 +102,18 @@ namespace L04_PongAnimated {
         return Math.random() < 0.5 ? -1 : 1; //Math.random returns a number between 0 and 1, thats why I need the getSign function
     }
 
+    // function detectHit(position: fudge.Vector3, mtxBox: fudge.Matrix4x4): boolean {
+    //     // let posBox: fudge.Vector3 = mtxBox.translation;
+    //     // let sclBox: fudge.Vector3 = mtxBox.scaling;
+    //     // sclBox.z = 0;
+    //     // sclBox.x *= -1;
+    //     // sclBox.scale(0.5);
+
+
+    //     return true;
+    // }
+
     function createPong(): fudge.Node {
-        let pong: fudge.Node = new fudge.Node("Pong");
     
         let meshQuad: fudge.MeshQuad = new fudge.MeshQuad();
 
@@ -120,34 +121,16 @@ namespace L04_PongAnimated {
         let mtrHotPink: fudge.Material = new fudge.Material("HotPink", fudge.ShaderUniColor, coat);
         let mtrSolidWhite: fudge.Material = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(1, 1, 1, 1)));
 
-        /** BALL **/
-        let cmpMeshBall: fudge.ComponentMesh = new fudge.ComponentMesh(meshQuad);
-        let cmpMaterialBall: fudge.ComponentMaterial = new fudge.ComponentMaterial(mtrSolidWhite);
-
-        ball.addComponent(cmpMeshBall);
-        ball.addComponent(cmpMaterialBall);
-        ball.addComponent(new fudge.ComponentTransform());
-
-        /** PADDLELEFT **/
-        let cmpMeshPadddleLeft: fudge.ComponentMesh = new fudge.ComponentMesh(meshQuad);
-        let cmpMaterialPaddleLeft: fudge.ComponentMaterial = new fudge.ComponentMaterial(mtrHotPink);
-
-        paddleLeft.addComponent(cmpMeshPadddleLeft);
-        paddleLeft.addComponent(cmpMaterialPaddleLeft);
-        paddleLeft.addComponent(new fudge.ComponentTransform());
-
-        /** PADDLERIGHT **/
-        let cmpMeshPaddleRight: fudge.ComponentMesh = new fudge.ComponentMesh(meshQuad);
-        let cmpMaterialPaddleRight: fudge.ComponentMaterial = new fudge.ComponentMaterial(mtrHotPink);
-
-        paddleRight.addComponent(cmpMeshPaddleRight);
-        paddleRight.addComponent(cmpMaterialPaddleRight);
-        paddleRight.addComponent(new fudge.ComponentTransform());
+        ball = createQuad("Ball", meshQuad, mtrSolidWhite, 0.75, 0.75, 0, 0);
+        paddleLeft = createQuad("PaddleLeft", meshQuad, mtrHotPink, 5, 0.5, -9, 0);
+        paddleRight = createQuad("PaddleRight", meshQuad, mtrHotPink, 5, 0.5, 9, 0);
+        leftWall = createQuad("LeftWall", meshQuad, mtrHotPink, 1, 20, 0, 7); 
 
         /** append children **/
         pong.appendChild(ball);
         pong.appendChild(paddleLeft);
         pong.appendChild(paddleRight);
+        pong.appendChild(leftWall);
 
         return pong;
     }
@@ -158,5 +141,25 @@ namespace L04_PongAnimated {
 
     function handleKeydown(_event: KeyboardEvent): void {
         keysPressed[_event.code] = true;
+    }
+
+    function createQuad(name: string, meshQuad: fudge.MeshQuad, material: fudge.Material, scaleX: number, scaleY: number, translateX: number, translateY: number): fudge.Node {
+        let node: fudge.Node = new fudge.Node(name);
+
+        let cmpMesh: fudge.ComponentMesh = new fudge.ComponentMesh(meshQuad);
+        let cmpMaterial: fudge.ComponentMaterial = new fudge.ComponentMaterial(material);
+
+        node.addComponent(cmpMesh);
+        node.addComponent(cmpMaterial);
+        node.addComponent(new fudge.ComponentTransform());
+
+        //paddleRight.cmpTransform.local.scaleY(5); --> verzerrt Koordinatensystem
+        (<fudge.ComponentMesh> node.getComponent(fudge.ComponentMesh)).pivot.scaleY(scaleX); 
+        (<fudge.ComponentMesh> node.getComponent(fudge.ComponentMesh)).pivot.scaleX(scaleY);
+
+        node.cmpTransform.local.translateX(translateX);
+        node.cmpTransform.local.translateY(translateY);
+
+        return node;
     }
 }
