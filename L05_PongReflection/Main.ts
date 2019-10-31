@@ -24,9 +24,6 @@ namespace L05_PongReflection {
     let randomX: number;
     let randomY: number;
 
-    let canvasLength: number = 9;
-    let canvasHeight: number = 7;
-
     function handleLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
         fudge.RenderManager.initialize();
@@ -42,7 +39,7 @@ namespace L05_PongReflection {
         /** BALL **/
         randomX = getSign() * Math.random();
         randomY = getSign() * Math.random();
-        ballSpeed = new fudge.Vector3(randomX / 2, randomY / 2, 0);
+        ballSpeed = new fudge.Vector3(randomX, randomY, 0);
 
         /** VIEWPORT **/
         viewport = new fudge.Viewport();
@@ -98,21 +95,6 @@ namespace L05_PongReflection {
         viewport.draw();
     }
 
-    function moveBall(): void {
-        /** MOVING BALL **/
-        ball.cmpTransform.local.translate(ballSpeed);
-
-        if (ball.cmpTransform.local.translation.x > canvasLength || ball.cmpTransform.local.translation.x < - canvasLength) {
-           randomX = - randomX;
-           ballSpeed = new fudge.Vector3(randomX, randomY, 0);
-        }
-
-        if (ball.cmpTransform.local.translation.y > canvasHeight || ball.cmpTransform.local.translation.y < - canvasHeight) {
-            randomY = - randomY;
-            ballSpeed = new fudge.Vector3(randomX, randomY, 0);
-        }
-    }
-
     function getSign(): number {
         return Math.random() < 0.5 ? -1 : 1; //Math.random returns a number between 0 and 1, thats why I need the getSign function
     }
@@ -145,13 +127,13 @@ namespace L05_PongReflection {
         let mtrSolidWhite: fudge.Material = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(1, 1, 1, 1)));
         let mtrSolidBlack: fudge.Material = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(0, 0, 0, 1)));
 
-        ball = createQuad("Ball", meshQuad, mtrSolidWhite, 0.75, 0.75, 0, 0);
-        paddleLeft = createQuad("PaddleLeft", meshQuad, mtrSolidWhite, 5, 0.5, -8.5, 0);
-        paddleRight = createQuad("PaddleRight", meshQuad, mtrSolidWhite, 5, 0.5, 8.5, 0);
-        topWall = createQuad("TopWall", meshQuad, mtrSolidBlack, 1, 20, 0, 7);
-        bottomWall = createQuad("BottomWall", meshQuad, mtrSolidBlack, 1, 20, 0, -7); 
-        leftWall = createQuad("LeftWall", meshQuad, mtrSolidBlack, 20, 1, -9.5, 0);
-        rightWall = createQuad("RightWall", meshQuad, mtrSolidBlack, 20, 1, 9.5, 0); 
+        ball = createQuad("Ball", meshQuad, mtrHotPink, 0.75, 0.75, new fudge.Vector3(0, 0, 0));
+        paddleLeft = createQuad("PaddleLeft", meshQuad, mtrSolidWhite, 5, 0.5,  new fudge.Vector3(-8.5, 0, 0));
+        paddleRight = createQuad("PaddleRight", meshQuad, mtrSolidWhite, 5, 0.5,  new fudge.Vector3(8.5, 0, 0));
+        topWall = createQuad("TopWall", meshQuad, mtrSolidBlack, 1, 20,  new fudge.Vector3(0, 7, 0));
+        bottomWall = createQuad("BottomWall", meshQuad, mtrSolidBlack, 1, 20, new fudge.Vector3(0, -7, 0)); 
+        leftWall = createQuad("LeftWall", meshQuad, mtrSolidBlack, 20, 1,  new fudge.Vector3(-9.5, 0, 0));
+        rightWall = createQuad("RightWall", meshQuad, mtrSolidBlack, 20, 1,  new fudge.Vector3(9.5, 0, 0)); 
 
         /** append children **/
         pong.appendChild(ball);
@@ -173,7 +155,7 @@ namespace L05_PongReflection {
         keysPressed[_event.code] = true;
     }
 
-    function createQuad(name: string, meshQuad: fudge.MeshQuad, material: fudge.Material, scaleX: number, scaleY: number, translateX: number, translateY: number): fudge.Node {
+    function createQuad(name: string, meshQuad: fudge.MeshQuad, material: fudge.Material, scaleX: number, scaleY: number, translation: fudge.Vector3): fudge.Node {
         let node: fudge.Node = new fudge.Node(name);
 
         let cmpMesh: fudge.ComponentMesh = new fudge.ComponentMesh(meshQuad);
@@ -187,8 +169,7 @@ namespace L05_PongReflection {
         (<fudge.ComponentMesh> node.getComponent(fudge.ComponentMesh)).pivot.scaleY(scaleX); 
         (<fudge.ComponentMesh> node.getComponent(fudge.ComponentMesh)).pivot.scaleX(scaleY);
 
-        node.cmpTransform.local.translateX(translateX);
-        node.cmpTransform.local.translateY(translateY);
+        node.cmpTransform.local.translate(translation);
 
         return node;
     }
