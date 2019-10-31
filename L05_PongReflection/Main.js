@@ -29,7 +29,7 @@ var L05_PongReflection;
         /** BALL **/
         randomX = getSign() * Math.random();
         randomY = getSign() * Math.random();
-        ballSpeed = new fudge.Vector3(randomX, randomY, 0);
+        ballSpeed = new fudge.Vector3(randomX / 2, randomY / 2, 0);
         /** VIEWPORT **/
         L05_PongReflection.viewport = new fudge.Viewport();
         L05_PongReflection.viewport.initialize("Viewport", pong, cmpCamera, canvas);
@@ -109,13 +109,14 @@ var L05_PongReflection;
         let coat = new fudge.CoatColored(new fudge.Color(1, 0, 1, 1));
         let mtrHotPink = new fudge.Material("HotPink", fudge.ShaderUniColor, coat);
         let mtrSolidWhite = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(1, 1, 1, 1)));
+        let mtrSolidBlack = new fudge.Material("SolidWhite", fudge.ShaderUniColor, new fudge.CoatColored(new fudge.Color(0, 0, 0, 1)));
         ball = createQuad("Ball", meshQuad, mtrSolidWhite, 0.75, 0.75, 0, 0);
         paddleLeft = createQuad("PaddleLeft", meshQuad, mtrSolidWhite, 5, 0.5, -8.5, 0);
         paddleRight = createQuad("PaddleRight", meshQuad, mtrSolidWhite, 5, 0.5, 8.5, 0);
-        topWall = createQuad("TopWall", meshQuad, mtrHotPink, 1, 20, 0, 7);
-        bottomWall = createQuad("BottomWall", meshQuad, mtrHotPink, 1, 20, 0, -7);
-        leftWall = createQuad("LeftWall", meshQuad, mtrHotPink, 20, 1, -9.5, 0);
-        rightWall = createQuad("RightWall", meshQuad, mtrHotPink, 20, 1, 9.5, 0);
+        topWall = createQuad("TopWall", meshQuad, mtrSolidBlack, 1, 20, 0, 7);
+        bottomWall = createQuad("BottomWall", meshQuad, mtrSolidBlack, 1, 20, 0, -7);
+        leftWall = createQuad("LeftWall", meshQuad, mtrSolidBlack, 20, 1, -9.5, 0);
+        rightWall = createQuad("RightWall", meshQuad, mtrSolidBlack, 20, 1, 9.5, 0);
         /** append children **/
         pong.appendChild(ball);
         pong.appendChild(paddleLeft);
