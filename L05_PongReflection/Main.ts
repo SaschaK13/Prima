@@ -24,10 +24,17 @@ namespace L05_PongReflection {
     let randomX: number;
     let randomY: number;
 
+    let pointsPaddleLeft: number = 0;
+    let pointsPaddleRight: number = 0;
+    
+    let hittedWall: boolean = false;
+
     function handleLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
+        let pointField: HTMLHeadingElement = document.querySelector("h2");
+        
         fudge.RenderManager.initialize();
-        fudge.Debug.log(canvas);
+        fudge.Debug.log(pointField);
 
         let pong: fudge.Node = createPong();
 
@@ -62,37 +69,59 @@ namespace L05_PongReflection {
 
         /** CONTROLS **/
         if (keysPressed[fudge.KEYBOARD_CODE.W] == true) {
-            paddleLeft.cmpTransform.local.translateY(0.3);
+            paddleLeft.cmpTransform.local.translate(new fudge.Vector3(0, 0.3, 0));
         } 
         if (keysPressed[fudge.KEYBOARD_CODE.S] == true) {
-            paddleLeft.cmpTransform.local.translateY(-0.3);
+            paddleLeft.cmpTransform.local.translate(new fudge.Vector3(0, -0.3, 0));
         }
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_UP] == true) {
-            paddleRight.cmpTransform.local.translateY(0.3);
+            paddleRight.cmpTransform.local.translate(new fudge.Vector3(0, 0.3, 0));
         }
         if (keysPressed[fudge.KEYBOARD_CODE.ARROW_DOWN] == true) {
-            paddleRight.cmpTransform.local.translateY(-0.3);
+            paddleRight.cmpTransform.local.translate(new fudge.Vector3(0, -0.3, 0));
         }
 
         ball.cmpTransform.local.translate(ballSpeed);
-        
-        if (detectHit(ball.cmpTransform.local.translation, topWall) == true || detectHit(ball.cmpTransform.local.translation, bottomWall) == true) {
-            randomY = - randomY;
-            ballSpeed = new fudge.Vector3(randomX, randomY, 0);
-        }
-
-        if (detectHit(ball.cmpTransform.local.translation, rightWall) == true || detectHit(ball.cmpTransform.local.translation, leftWall) == true) {
-            pong.removeChild(ball);
-        }
 
         if (detectHit(ball.cmpTransform.local.translation, paddleLeft) == true || detectHit(ball.cmpTransform.local.translation, paddleRight) == true) {
             randomX = - randomX;
             ballSpeed = new fudge.Vector3(randomX, randomY, 0);
         }
         
+        if (detectHit(ball.cmpTransform.local.translation, topWall) == true || detectHit(ball.cmpTransform.local.translation, bottomWall) == true) {
+            randomY = - randomY;
+            ballSpeed = new fudge.Vector3(randomX, randomY, 0);
+        }
+
+        if (detectHit(ball.cmpTransform.local.translation, rightWall) == true) {
+            if(hittedWall == false) {
+                pointsPaddleRight++;
+                document.querySelector("h2").innerHTML = "" + pointsPaddleLeft + " : " + pointsPaddleRight + "";
+                hittedWall = true;
+                spawnBall();
+                hittedWall = false;
+            }
+        }
+
+        if (detectHit(ball.cmpTransform.local.translation, leftWall) == true) {
+            if(hittedWall == false) {
+                pointsPaddleLeft++;
+                document.querySelector("h2").innerHTML = "" + pointsPaddleLeft + " : " + pointsPaddleRight + "";
+                hittedWall = true;
+                spawnBall();
+                hittedWall = false;
+            }
+        }
 
         fudge.RenderManager.update();
         viewport.draw();
+    }
+
+    function spawnBall(): void {
+        randomX = getSign() * Math.random();
+        randomY = getSign() * Math.random();
+        ball.cmpTransform.local.translation = (new fudge.Vector3(0, 0, 0));
+        ballSpeed = new fudge.Vector3(randomX, randomY, 0);
     }
 
     function getSign(): number {
