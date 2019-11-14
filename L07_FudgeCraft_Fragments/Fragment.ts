@@ -28,7 +28,9 @@ namespace L07_FudgeCraft_Fragments {
                 // s
                 [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, -1, 0]],
 
-                [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, -1, 0]]
+                [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, -1, 0]],
+
+                [[0, 0, 0], [0, 1, 0], [0, -1, 0], [1, -1, 0]]
             ];
         }
 
@@ -37,7 +39,7 @@ namespace L07_FudgeCraft_Fragments {
             return _enum[randomKey];
         }
 
-        private static getColor(shape: number) {
+        private static getColor(shape: number): CUBE_TYPE {
             switch (shape) {
                 case 1:
                     return CUBE_TYPE.GREEN;
@@ -47,6 +49,9 @@ namespace L07_FudgeCraft_Fragments {
                     break;
                 case 3:
                     return CUBE_TYPE.YELLOW;
+                    break;
+                case 4:
+                    return CUBE_TYPE.MAGENTA;
                     break;
                 default:
                     return CUBE_TYPE.RED;

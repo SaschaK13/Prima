@@ -25,7 +25,8 @@ var L07_FudgeCraft_Fragments;
                 [[0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0]],
                 // s
                 [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, -1, 0]],
-                [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, -1, 0]]
+                [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, -1, 0]],
+                [[0, 0, 0], [0, 1, 0], [0, -1, 0], [1, -1, 0]]
             ];
         }
         static getRandomEnum(_enum) {
@@ -42,6 +43,9 @@ var L07_FudgeCraft_Fragments;
                     break;
                 case 3:
                     return L07_FudgeCraft_Fragments.CUBE_TYPE.YELLOW;
+                    break;
+                case 4:
+                    return L07_FudgeCraft_Fragments.CUBE_TYPE.MAGENTA;
                     break;
                 default:
                     return L07_FudgeCraft_Fragments.CUBE_TYPE.RED;

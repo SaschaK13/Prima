@@ -37,6 +37,10 @@ namespace L07_FudgeCraft_Fragments {
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(6))));
         game.appendChild(fragment);
 
+        fragment = new Fragment(4);
+        fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(-6))));
+        game.appendChild(fragment);
+
         /** LIGHT **/
         let cmpLight: fudge.ComponentLight = new fudge.ComponentLight(new fudge.LightDirectional(fudge.Color.WHITE));
         cmpLight.pivot.lookAt(new fudge.Vector3(0.5, 1, 0.8));

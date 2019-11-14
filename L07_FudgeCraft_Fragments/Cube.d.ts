@@ -4,7 +4,8 @@ declare namespace L07_FudgeCraft_Fragments {
         GREEN = "Green",
         RED = "Red",
         BLUE = "Blue",
-        YELLOW = "Yellow"
+        YELLOW = "Yellow",
+        MAGENTA = "Magenta"
     }
     class Cube extends fudge.Node {
         private static mesh;
