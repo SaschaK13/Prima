@@ -14,7 +14,7 @@ var L07_FudgeCraft_Fragments;
         cmpCamera.pivot.translate(new fudge.Vector3(2, 3, 20));
         cmpCamera.pivot.lookAt(fudge.Vector3.ZERO());
         game = new fudge.Node("FudgeCraft");
-        // let cube: Cube = new Cube(CUBE_TYPE.BLUE);
+        /** FRAGMENTS **/
         let fragment = new L07_FudgeCraft_Fragments.Fragment(0);
         // ƒ.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform());

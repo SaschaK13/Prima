@@ -8,8 +8,8 @@ var L07_FudgeCraft_Fragments;
             this.position = new fudge.Vector3(0, 0, 0);
             let shape = Fragment.shapes[_shape];
             let type;
-            for (let position of shape) {
-                let type = Fragment.getRandomEnum(L07_FudgeCraft_Fragments.CUBE_TYPE);
+            for (let position of shape) { // like for each - for in returns indizes
+                type = Fragment.getRandomEnum(L07_FudgeCraft_Fragments.CUBE_TYPE);
                 type = Fragment.getColor(_shape);
                 let vctPosition = fudge.Vector3.ZERO();
                 vctPosition.set(position[0], position[1], position[2]);
@@ -19,11 +19,8 @@ var L07_FudgeCraft_Fragments;
         }
         static getShapeArray() {
             return [
-                // corner
                 [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 0]],
-                // quad
                 [[0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0]],
-                // s
                 [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, -1, 0]],
                 [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, -1, 0]],
                 [[0, 0, 0], [0, 1, 0], [0, -1, 0], [1, -1, 0]]

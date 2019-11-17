@@ -17,7 +17,7 @@ namespace L07_FudgeCraft_Fragments {
 
         game = new fudge.Node("FudgeCraft");
 
-        // let cube: Cube = new Cube(CUBE_TYPE.BLUE);
+        /** FRAGMENTS **/
         let fragment: Fragment = new Fragment(0);
         // ƒ.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform());

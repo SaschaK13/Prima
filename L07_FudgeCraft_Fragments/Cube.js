@@ -4,21 +4,25 @@ var L07_FudgeCraft_Fragments;
     var fudge = FudgeCore;
     let CUBE_TYPE;
     (function (CUBE_TYPE) {
+        //string is not necessary but makes it more readable - default of enum is number
         CUBE_TYPE["GREEN"] = "Green";
         CUBE_TYPE["RED"] = "Red";
         CUBE_TYPE["BLUE"] = "Blue";
         CUBE_TYPE["YELLOW"] = "Yellow";
         CUBE_TYPE["MAGENTA"] = "Magenta";
+        CUBE_TYPE["CYAN"] = "Cyan";
     })(CUBE_TYPE = L07_FudgeCraft_Fragments.CUBE_TYPE || (L07_FudgeCraft_Fragments.CUBE_TYPE = {}));
+    //map and generics
+    //export makes class Cube accessable for other files
     class Cube extends fudge.Node {
         constructor(_type, _position) {
-            super("Cube");
+            super("Cube"); //constructor of the upper class
             let cmpMesh = new fudge.ComponentMesh(Cube.mesh);
             this.addComponent(cmpMesh);
             let cmpMaterial = new fudge.ComponentMaterial(Cube.materials.get(_type));
             this.addComponent(cmpMaterial);
             let cmpTransform = new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(_position));
-            cmpTransform.local.scale(fudge.Vector3.ONE(0.9));
+            cmpTransform.local.scale(fudge.Vector3.ONE(0.99));
             this.addComponent(cmpTransform);
         }
         static createMaterials() {
@@ -28,11 +32,12 @@ var L07_FudgeCraft_Fragments;
                 [CUBE_TYPE.BLUE, new fudge.Material(CUBE_TYPE.BLUE, fudge.ShaderFlat, new fudge.CoatColored(fudge.Color.BLUE))],
                 [CUBE_TYPE.MAGENTA, new fudge.Material(CUBE_TYPE.MAGENTA, fudge.ShaderFlat, new fudge.CoatColored(fudge.Color.MAGENTA))],
                 [CUBE_TYPE.YELLOW, new fudge.Material(CUBE_TYPE.YELLOW, fudge.ShaderFlat, new fudge.CoatColored(fudge.Color.YELLOW))],
+                [CUBE_TYPE.CYAN, new fudge.Material(CUBE_TYPE.CYAN, fudge.ShaderFlat, new fudge.CoatColored(fudge.Color.CYAN))]
             ]);
         }
     }
     Cube.mesh = new fudge.MeshCube();
-    Cube.materials = Cube.createMaterials();
+    Cube.materials = Cube.createMaterials(); //has to be a static method because there is no object in front
     L07_FudgeCraft_Fragments.Cube = Cube;
 })(L07_FudgeCraft_Fragments || (L07_FudgeCraft_Fragments = {}));
 //# sourceMappingURL=Cube.js.map
