@@ -1,6 +1,6 @@
 "use strict";
-var L07_FudgeCraft_Fragments;
-(function (L07_FudgeCraft_Fragments) {
+var L08_FudgeCraft_Collision;
+(function (L08_FudgeCraft_Collision) {
     var fudge = FudgeCore;
     window.addEventListener("load", hndLoad);
     let viewport;
@@ -16,22 +16,22 @@ var L07_FudgeCraft_Fragments;
         cmpCamera.pivot.lookAt(fudge.Vector3.ZERO());
         game = new fudge.Node("FudgeCraft");
         /** FRAGMENTS **/
-        let fragment = new L07_FudgeCraft_Fragments.Fragment(0);
+        let fragment = new L08_FudgeCraft_Collision.Fragment(0);
         // ƒ.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform());
         game.appendChild(fragment);
-        fragment = new L07_FudgeCraft_Fragments.Fragment(1);
+        fragment = new L08_FudgeCraft_Collision.Fragment(1);
         // ƒ.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(3))));
         game.appendChild(fragment);
-        fragment = new L07_FudgeCraft_Fragments.Fragment(2);
+        fragment = new L08_FudgeCraft_Collision.Fragment(2);
         // ƒ.Debug.log("Fragment", fragment);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(-3))));
         game.appendChild(fragment);
-        fragment = new L07_FudgeCraft_Fragments.Fragment(3);
+        fragment = new L08_FudgeCraft_Collision.Fragment(3);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(6))));
         game.appendChild(fragment);
-        fragment = new L07_FudgeCraft_Fragments.Fragment(4);
+        fragment = new L08_FudgeCraft_Collision.Fragment(4);
         fragment.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(fudge.Vector3.X(-6))));
         game.appendChild(fragment);
         /** LIGHT **/
@@ -84,7 +84,6 @@ var L07_FudgeCraft_Fragments;
         //fudge.Debug.log(grid);
         for (let fragment of game.getChildren()) {
             for (let cube of fragment.getChildren()) {
-                //let fragmentTranslation: fudge.Vector3 = fragment.cmpTransform.local.translation;
                 let cubeTranslation = cube.cmpTransform.local.translation;
                 let transformedTranslation = getGrid(cubeTranslation);
                 grid[transformedTranslation.x][transformedTranslation.y][transformedTranslation.z] = cube;
@@ -99,12 +98,5 @@ var L07_FudgeCraft_Fragments;
         fudge.Debug.log(coordinates);
         return coordinates;
     }
-    // function update(_event: Event): void {
-    //     for (let fragment of game.getChildren()) {
-    //         fragment.cmpTransform.local.translate(new fudge.Vector3(0, -1, 0));
-    //     }
-    //     fudge.RenderManager.update();
-    //     viewport.draw();
-    // }
-})(L07_FudgeCraft_Fragments || (L07_FudgeCraft_Fragments = {}));
+})(L08_FudgeCraft_Collision || (L08_FudgeCraft_Collision = {}));
 //# sourceMappingURL=Main.js.map
