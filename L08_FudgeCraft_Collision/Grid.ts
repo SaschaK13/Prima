@@ -1,4 +1,5 @@
 namespace L08_FudgeCraft_Collision {
+
     import fudge = FudgeCore;
 
     export class GridElement {
@@ -9,32 +10,39 @@ namespace L08_FudgeCraft_Collision {
         }
     }
 
-    export class Grid extends Map <string, Cube> { //grid is a map
-       // private grid: Map <string, Cube> = new Map(); //grid manages map
-       push(_cube: Cube): void {
-           let key: string = this.toKey(_cube.cmpTransform.local.translation.map(Math.round));
-           this.set(key, _cube);
-           game.appendChild(_cube);
+    export class Grid extends Map<string, GridElement> {
+        // private grid: Map<string, Cube> = new Map();
+        constructor() {
+            super();
+            this.push(fudge.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.GREY, fudge.Vector3.ZERO())));
         }
 
-        setCube(_position: fudge.Vector3): Cube {
+        push(_position: fudge.Vector3, _element: GridElement = null): void {
             let key: string = this.toKey(_position);
-            let cube: Cube = this.get(key);
-            return cube;
+            this.set(key, _element);
+            if (_element)
+                game.appendChild(_element.cube);
         }
-        
-        getCube(_position: fudge.Vector3): Cube {
+
+        pull(_position: fudge.Vector3): GridElement {
             let key: string = this.toKey(_position);
-            let cube: Cube = this.get(key);
+            let element: GridElement = this.get(key);
+            return element;
+        }
+
+        pop(_position: fudge.Vector3): GridElement {
+            let key: string = this.toKey(_position);
+            let element: GridElement = this.get(key);
             this.delete(key);
-            game.removeChild(cube);
-            return cube;
+            if (element)
+                game.removeChild(element.cube);
+            return element;
         }
 
         toKey(_position: fudge.Vector3): string {
             let position: fudge.Vector3 = _position.map(Math.round);
             let key: string = position.toString();
             return key;
-        }   
+        }
     }
 }

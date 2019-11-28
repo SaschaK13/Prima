@@ -1,8 +1,8 @@
 declare namespace L08_FudgeCraft_Collision {
-    import ƒ = FudgeCore;
+    import fudge = FudgeCore;
     interface Transformation {
-        translation?: ƒ.Vector3;
-        rotation?: ƒ.Vector3;
+        translation?: fudge.Vector3;
+        rotation?: fudge.Vector3;
     }
     interface Transformations {
         [keycode: string]: Transformation;
@@ -11,7 +11,7 @@ declare namespace L08_FudgeCraft_Collision {
         element: GridElement;
         cube: Cube;
     }
-    class Control extends ƒ.Node {
+    class Control extends fudge.Node {
         static transformations: Transformations;
         private fragment;
         constructor();

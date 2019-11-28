@@ -3,27 +3,35 @@ var L08_FudgeCraft_Collision;
 (function (L08_FudgeCraft_Collision) {
     var fudge = FudgeCore;
     class Fragment extends fudge.Node {
-        constructor(_shape) {
+        constructor(_shape, _position = fudge.Vector3.ZERO()) {
             super("Fragment-Type" + _shape);
             this.position = new fudge.Vector3(0, 0, 0);
             let shape = Fragment.shapes[_shape];
-            let type;
-            for (let position of shape) { // like for each - for in returns indizes
-                type = Fragment.getRandomEnum(L08_FudgeCraft_Collision.CUBE_TYPE);
-                //type = Fragment.getColor(_shape);
+            for (let position of shape) {
+                let type;
+                do {
+                    type = Fragment.getRandomEnum(L08_FudgeCraft_Collision.CUBE_TYPE);
+                } while (type == L08_FudgeCraft_Collision.CUBE_TYPE.GREY);
                 let vctPosition = fudge.Vector3.ZERO();
                 vctPosition.set(position[0], position[1], position[2]);
                 let cube = new L08_FudgeCraft_Collision.Cube(type, vctPosition);
                 this.appendChild(cube);
             }
+            this.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(_position)));
+        }
+        static getRandom() {
+            let shape = Math.floor(Math.random() * Fragment.shapes.length);
+            let fragment = new Fragment(shape);
+            return fragment;
         }
         static getShapeArray() {
             return [
-                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 0]],
+                // corner
+                [[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]],
+                // quad
                 [[0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0]],
-                [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, -1, 0]],
-                [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, -1, 0]],
-                [[0, 0, 0], [0, 1, 0], [0, -1, 0], [1, -1, 0]]
+                // s
+                [[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, -1, 0]]
             ];
         }
         static getRandomEnum(_enum) {

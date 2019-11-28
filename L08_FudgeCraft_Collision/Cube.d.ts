@@ -6,7 +6,8 @@ declare namespace L08_FudgeCraft_Collision {
         BLUE = "Blue",
         YELLOW = "Yellow",
         MAGENTA = "Magenta",
-        CYAN = "Cyan"
+        CYAN = "Cyan",
+        GREY = "Grey"
     }
     class Cube extends fudge.Node {
         private static mesh;

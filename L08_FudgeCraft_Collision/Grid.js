@@ -1,6 +1,7 @@
 "use strict";
 var L08_FudgeCraft_Collision;
 (function (L08_FudgeCraft_Collision) {
+    var fudge = FudgeCore;
     class GridElement {
         constructor(_cube = null) {
             this.cube = _cube;
@@ -8,23 +9,29 @@ var L08_FudgeCraft_Collision;
     }
     L08_FudgeCraft_Collision.GridElement = GridElement;
     class Grid extends Map {
-        // private grid: Map <string, Cube> = new Map(); //grid manages map
-        push(_cube) {
-            let key = this.toKey(_cube.cmpTransform.local.translation.map(Math.round));
-            this.set(key, _cube);
-            L08_FudgeCraft_Collision.game.appendChild(_cube);
+        // private grid: Map<string, Cube> = new Map();
+        constructor() {
+            super();
+            this.push(fudge.Vector3.ZERO(), new GridElement(new L08_FudgeCraft_Collision.Cube(L08_FudgeCraft_Collision.CUBE_TYPE.GREY, fudge.Vector3.ZERO())));
         }
-        setCube(_position) {
+        push(_position, _element = null) {
             let key = this.toKey(_position);
-            let cube = this.get(key);
-            return cube;
+            this.set(key, _element);
+            if (_element)
+                L08_FudgeCraft_Collision.game.appendChild(_element.cube);
         }
-        getCube(_position) {
+        pull(_position) {
             let key = this.toKey(_position);
-            let cube = this.get(key);
+            let element = this.get(key);
+            return element;
+        }
+        pop(_position) {
+            let key = this.toKey(_position);
+            let element = this.get(key);
             this.delete(key);
-            L08_FudgeCraft_Collision.game.removeChild(cube);
-            return cube;
+            if (element)
+                L08_FudgeCraft_Collision.game.removeChild(element.cube);
+            return element;
         }
         toKey(_position) {
             let position = _position.map(Math.round);

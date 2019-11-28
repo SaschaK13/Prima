@@ -1,24 +1,24 @@
 "use strict";
 var L08_FudgeCraft_Collision;
 (function (L08_FudgeCraft_Collision) {
-    var ƒ = FudgeCore;
-    class Control extends ƒ.Node {
+    var fudge = FudgeCore;
+    class Control extends fudge.Node {
         constructor() {
             super("Control");
-            this.addComponent(new ƒ.ComponentTransform());
+            this.addComponent(new fudge.ComponentTransform());
         }
         static defineControls() {
             let controls = {};
-            controls[ƒ.KEYBOARD_CODE.ARROW_UP] = { rotation: ƒ.Vector3.X(-1) };
-            controls[ƒ.KEYBOARD_CODE.ARROW_DOWN] = { rotation: ƒ.Vector3.X(1) };
-            controls[ƒ.KEYBOARD_CODE.ARROW_LEFT] = { rotation: ƒ.Vector3.Y(-1) };
-            controls[ƒ.KEYBOARD_CODE.ARROW_RIGHT] = { rotation: ƒ.Vector3.Y(1) };
-            controls[ƒ.KEYBOARD_CODE.W] = { translation: ƒ.Vector3.Z(-1) };
-            controls[ƒ.KEYBOARD_CODE.S] = { translation: ƒ.Vector3.Z(1) };
-            controls[ƒ.KEYBOARD_CODE.A] = { translation: ƒ.Vector3.X(-1) };
-            controls[ƒ.KEYBOARD_CODE.D] = { translation: ƒ.Vector3.X(1) };
-            controls[ƒ.KEYBOARD_CODE.SHIFT_LEFT] = controls[ƒ.KEYBOARD_CODE.SHIFT_RIGHT] = { translation: ƒ.Vector3.Y(1) };
-            controls[ƒ.KEYBOARD_CODE.CTRL_LEFT] = controls[ƒ.KEYBOARD_CODE.CTRL_RIGHT] = { translation: ƒ.Vector3.Y(-1) };
+            controls[fudge.KEYBOARD_CODE.ARROW_UP] = { rotation: fudge.Vector3.X(-1) };
+            controls[fudge.KEYBOARD_CODE.ARROW_DOWN] = { rotation: fudge.Vector3.X(1) };
+            controls[fudge.KEYBOARD_CODE.ARROW_LEFT] = { rotation: fudge.Vector3.Y(-1) };
+            controls[fudge.KEYBOARD_CODE.ARROW_RIGHT] = { rotation: fudge.Vector3.Y(1) };
+            controls[fudge.KEYBOARD_CODE.W] = { translation: fudge.Vector3.Z(-1) };
+            controls[fudge.KEYBOARD_CODE.S] = { translation: fudge.Vector3.Z(1) };
+            controls[fudge.KEYBOARD_CODE.A] = { translation: fudge.Vector3.X(-1) };
+            controls[fudge.KEYBOARD_CODE.D] = { translation: fudge.Vector3.X(1) };
+            controls[fudge.KEYBOARD_CODE.SHIFT_LEFT] = controls[fudge.KEYBOARD_CODE.SHIFT_RIGHT] = { translation: fudge.Vector3.Y(1) };
+            controls[fudge.KEYBOARD_CODE.CTRL_LEFT] = controls[fudge.KEYBOARD_CODE.CTRL_RIGHT] = { translation: fudge.Vector3.Y(-1) };
             return controls;
         }
         setFragment(_fragment) {
@@ -28,8 +28,8 @@ var L08_FudgeCraft_Collision;
             this.fragment = _fragment;
         }
         move(_transformation) {
-            let mtxContainer = this.cmpTransform.local; //local
-            let mtxFragment = this.fragment.cmpTransform.local; //parent (world)
+            let mtxContainer = this.cmpTransform.local;
+            let mtxFragment = this.fragment.cmpTransform.local;
             mtxFragment.rotate(_transformation.rotation, true);
             mtxContainer.translate(_transformation.translation);
         }
@@ -39,10 +39,10 @@ var L08_FudgeCraft_Collision;
             let save = [mtxContainer.getMutator(), mtxFragment.getMutator()];
             mtxFragment.rotate(_transformation.rotation, true);
             mtxContainer.translate(_transformation.translation);
-            ƒ.RenderManager.update();
+            fudge.RenderManager.update();
             let collisions = [];
             for (let cube of this.fragment.getChildren()) {
-                let element = L08_FudgeCraft_Collision.grid.getCube(cube.mtxWorld.translation);
+                let element = L08_FudgeCraft_Collision.grid.pull(cube.mtxWorld.translation);
                 if (element)
                     collisions.push({ element, cube });
             }
@@ -54,7 +54,7 @@ var L08_FudgeCraft_Collision;
             for (let cube of this.fragment.getChildren()) {
                 let position = cube.mtxWorld.translation;
                 cube.cmpTransform.local.translation = position;
-                L08_FudgeCraft_Collision.grid.setCube(position, new L08_FudgeCraft_Collision.GridElement(cube));
+                L08_FudgeCraft_Collision.grid.push(position, new L08_FudgeCraft_Collision.GridElement(cube));
             }
         }
     }
