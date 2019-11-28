@@ -3,8 +3,8 @@ namespace L08_FudgeCraft_Collision {
 
     window.addEventListener("load", hndLoad);
     let viewport: fudge.Viewport;
-    let game: fudge.Node;
-    let grid: Cube [][][];
+    export let game: fudge.Node;
+    export let grid: Grid = new Grid();
     let rotate: fudge.Vector3 = fudge.Vector3.ZERO();
 
     function hndLoad(_event: Event): void {
@@ -99,7 +99,7 @@ namespace L08_FudgeCraft_Collision {
 
         //TODO initialize array
         const n: number = 20; 
-        grid = new Array(n).fill(null).map(() => new Array(n).fill(null).map(() => new Array(n).fill(null)));
+        //grid = new Array(n).fill(null).map(() => new Array(n).fill(null).map(() => new Array(n).fill(null)));
         //fudge.Debug.log(grid);
 
         for (let fragment of game.getChildren()) {
@@ -107,10 +107,37 @@ namespace L08_FudgeCraft_Collision {
                 let cubeTranslation: fudge.Vector3 = cube.cmpTransform.local.translation;
                 let transformedTranslation: fudge.Vector3 = getGrid(cubeTranslation);
 
-                grid[transformedTranslation.x][transformedTranslation.y][transformedTranslation.z] = cube;
+                //grid[transformedTranslation.x][transformedTranslation.y][transformedTranslation.z] = cube;
                 fudge.Debug.log(grid);
             }
         }
+    }
+
+    function move(_transformation: Transformation): void {
+        let animationSteps: number = 10;
+        let fullRotation: number = 90;
+        let fullTranslation: number = 1;
+        let move: Transformation = {
+            rotation: _transformation.rotation ? ƒ.Vector3.SCALE(_transformation.rotation, fullRotation) : new ƒ.Vector3(),
+            translation: _transformation.translation ? ƒ.Vector3.SCALE(_transformation.translation, fullTranslation) : new ƒ.Vector3()
+        };
+
+        let timers: fudge.Timers = fudge.Time.game.getTimers();
+        if (Object.keys(timers).length > 0)
+            return;
+
+        let collisions: GridElement[] = control.checkCollisions(move);
+        if (collisions.length > 0)
+            return;
+
+        move.translation.scale(1 / animationSteps);
+        move.rotation.scale(1 / animationSteps);
+
+        fudge.Time.game.setTimer(10, animationSteps, function (): void {
+            control.move(move);
+            // ƒ.RenderManager.update();
+            viewport.draw();
+        });
     }
 
     function getGrid(coordinates: fudge.Vector3): fudge.Vector3 {
