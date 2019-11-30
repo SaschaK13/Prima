@@ -1,29 +1,34 @@
 "use strict";
-var L08_FudgeCraft_Collision;
-(function (L08_FudgeCraft_Collision) {
+var L09_FudgeCraft_CameraControl;
+(function (L09_FudgeCraft_CameraControl) {
     var fudge = FudgeCore;
     window.addEventListener("load", hndLoad);
-    L08_FudgeCraft_Collision.game = new fudge.Node("FudgeCraft");
-    L08_FudgeCraft_Collision.grid = new L08_FudgeCraft_Collision.Grid();
-    let control = new L08_FudgeCraft_Collision.Control();
+    L09_FudgeCraft_CameraControl.game = new fudge.Node("FudgeCraft");
+    L09_FudgeCraft_CameraControl.grid = new L09_FudgeCraft_CameraControl.Grid();
+    let control = new L09_FudgeCraft_CameraControl.Control();
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         fudge.RenderManager.initialize(true);
         fudge.Debug.log("Canvas", canvas);
+        //Camera
+        let camera = new L09_FudgeCraft_CameraControl.CameraOrbit(75);
+        //Light
         let cmpLight = new fudge.ComponentLight(new fudge.LightDirectional(fudge.Color.WHITE));
         cmpLight.pivot.lookAt(new fudge.Vector3(0.5, 1, 0.8));
-        L08_FudgeCraft_Collision.game.addComponent(cmpLight);
+        L09_FudgeCraft_CameraControl.game.addComponent(cmpLight);
         let cmpLightAmbient = new fudge.ComponentLight(new fudge.LightAmbient(fudge.Color.DARK_GREY));
-        L08_FudgeCraft_Collision.game.addComponent(cmpLightAmbient);
-        L08_FudgeCraft_Collision.viewport = new fudge.Viewport();
-        L08_FudgeCraft_Collision.viewport.initialize("Viewport", L08_FudgeCraft_Collision.game, L08_FudgeCraft_Collision.cmpCamera, canvas);
-        fudge.Debug.log("Viewport", L08_FudgeCraft_Collision.viewport);
-        L08_FudgeCraft_Collision.viewport.draw();
+        L09_FudgeCraft_CameraControl.game.addComponent(cmpLightAmbient);
+        L09_FudgeCraft_CameraControl.viewport = new fudge.Viewport();
+        L09_FudgeCraft_CameraControl.viewport.initialize("Viewport", L09_FudgeCraft_CameraControl.game, camera.getCmpCamera(), canvas);
+        fudge.Debug.log("Viewport", L09_FudgeCraft_CameraControl.viewport);
+        L09_FudgeCraft_CameraControl.viewport.draw();
         startRandomFragment();
-        L08_FudgeCraft_Collision.game.appendChild(control);
-        L08_FudgeCraft_Collision.viewport.draw();
-        fudge.Debug.log("Game", L08_FudgeCraft_Collision.game);
+        L09_FudgeCraft_CameraControl.game.appendChild(control);
+        L09_FudgeCraft_CameraControl.viewport.draw();
+        fudge.Debug.log("Game", L09_FudgeCraft_CameraControl.game);
         window.addEventListener("keydown", hndKeyDown);
+        //window.addEventListener("wheel", hndWheel);
+        window.addEventListener("mousemove", hndMousemove);
         //test();
     }
     function hndKeyDown(_event) {
@@ -31,11 +36,11 @@ var L08_FudgeCraft_Collision;
             control.freeze();
             startRandomFragment();
         }
-        let transformation = L08_FudgeCraft_Collision.Control.transformations[_event.code];
+        let transformation = L09_FudgeCraft_CameraControl.Control.transformations[_event.code];
         if (transformation)
             move(transformation);
         // ƒ.RenderManager.update();
-        L08_FudgeCraft_Collision.viewport.draw();
+        L09_FudgeCraft_CameraControl.viewport.draw();
     }
     function move(_transformation) {
         let animationSteps = 10;
@@ -56,14 +61,23 @@ var L08_FudgeCraft_Collision;
         fudge.Time.game.setTimer(10, animationSteps, function () {
             control.move(move);
             // ƒ.RenderManager.update();
-            L08_FudgeCraft_Collision.viewport.draw();
+            L09_FudgeCraft_CameraControl.viewport.draw();
         });
     }
     function startRandomFragment() {
-        let fragment = L08_FudgeCraft_Collision.Fragment.getRandom();
+        let fragment = L09_FudgeCraft_CameraControl.Fragment.getRandom();
         control.cmpTransform.local = fudge.Matrix4x4.IDENTITY;
         control.setFragment(fragment);
     }
-    L08_FudgeCraft_Collision.startRandomFragment = startRandomFragment;
-})(L08_FudgeCraft_Collision || (L08_FudgeCraft_Collision = {}));
+    L09_FudgeCraft_CameraControl.startRandomFragment = startRandomFragment;
+    // function hndWheel(_event: Event): void {
+    //     camera.pivot.translateZ(5);
+    //     fudge.Debug.log(camera);
+    //     viewport.draw();
+    // }
+    function hndMousemove(_event) {
+        fudge.Debug.log(_event);
+        L09_FudgeCraft_CameraControl.viewport.draw();
+    }
+})(L09_FudgeCraft_CameraControl || (L09_FudgeCraft_CameraControl = {}));
 //# sourceMappingURL=Main.js.map

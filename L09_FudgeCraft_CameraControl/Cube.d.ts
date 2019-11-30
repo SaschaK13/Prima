@@ -1,4 +1,4 @@
-declare namespace L08_FudgeCraft_Collision {
+declare namespace L09_FudgeCraft_CameraControl {
     import fudge = FudgeCore;
     enum CUBE_TYPE {
         GREEN = "Green",

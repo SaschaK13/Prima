@@ -1,4 +1,4 @@
-namespace L08_FudgeCraft_Collision {
+namespace L09_FudgeCraft_CameraControl {
 
     import fudge = FudgeCore;
 

@@ -1,14 +1,31 @@
-"use strict";
-var L08_FudgeCraft_Collision;
-(function (L08_FudgeCraft_Collision) {
-    var fudge = FudgeCore;
-    class Control extends fudge.Node {
+namespace L09_FudgeCraft_CameraControl {
+    import fudge = FudgeCore;
+
+    export interface Transformation {
+        translation?: fudge.Vector3;
+        rotation?: fudge.Vector3;
+    }
+
+    export interface Transformations {
+        [keycode: string]: Transformation;
+    }
+
+    export interface Collision {
+        element: GridElement;
+        cube: Cube;
+    }
+
+    export class Control extends fudge.Node {
+        public static transformations: Transformations = Control.defineControls();
+        private fragment: Fragment;
+
         constructor() {
             super("Control");
             this.addComponent(new fudge.ComponentTransform());
         }
-        static defineControls() {
-            let controls = {};
+
+        public static defineControls(): Transformations {
+            let controls: Transformations = {};
             controls[fudge.KEYBOARD_CODE.ARROW_UP] = { rotation: fudge.Vector3.X(-1) };
             controls[fudge.KEYBOARD_CODE.ARROW_DOWN] = { rotation: fudge.Vector3.X(1) };
             controls[fudge.KEYBOARD_CODE.ARROW_LEFT] = { rotation: fudge.Vector3.Y(-1) };
@@ -21,44 +38,49 @@ var L08_FudgeCraft_Collision;
             controls[fudge.KEYBOARD_CODE.CTRL_LEFT] = controls[fudge.KEYBOARD_CODE.CTRL_RIGHT] = { translation: fudge.Vector3.Y(-1) };
             return controls;
         }
-        setFragment(_fragment) {
+
+        public setFragment(_fragment: Fragment): void {
             for (let child of this.getChildren())
                 this.removeChild(child);
             this.appendChild(_fragment);
             this.fragment = _fragment;
         }
-        move(_transformation) {
-            let mtxContainer = this.cmpTransform.local;
-            let mtxFragment = this.fragment.cmpTransform.local;
+
+        public move(_transformation: Transformation): void {
+            let mtxContainer: fudge.Matrix4x4 = this.cmpTransform.local;
+            let mtxFragment: fudge.Matrix4x4 = this.fragment.cmpTransform.local;
             mtxFragment.rotate(_transformation.rotation, true);
             mtxContainer.translate(_transformation.translation);
         }
-        checkCollisions(_transformation) {
-            let mtxContainer = this.cmpTransform.local;
-            let mtxFragment = this.fragment.cmpTransform.local;
-            let save = [mtxContainer.getMutator(), mtxFragment.getMutator()];
+
+        public checkCollisions(_transformation: Transformation): Collision[] {
+            let mtxContainer: fudge.Matrix4x4 = this.cmpTransform.local;
+            let mtxFragment: fudge.Matrix4x4 = this.fragment.cmpTransform.local;
+            let save: fudge.Mutator[] = [mtxContainer.getMutator(), mtxFragment.getMutator()];
             mtxFragment.rotate(_transformation.rotation, true);
             mtxContainer.translate(_transformation.translation);
+
             fudge.RenderManager.update();
-            let collisions = [];
+
+            let collisions: Collision[] = [];
             for (let cube of this.fragment.getChildren()) {
-                let element = L08_FudgeCraft_Collision.grid.pull(cube.mtxWorld.translation);
+                let element: GridElement = grid.pull(cube.mtxWorld.translation);
                 if (element)
                     collisions.push({ element, cube });
             }
+
             mtxContainer.mutate(save[0]);
             mtxFragment.mutate(save[1]);
+
             return collisions;
         }
-        freeze() {
+        
+        public freeze(): void {
             for (let cube of this.fragment.getChildren()) {
-                let position = cube.mtxWorld.translation;
+                let position: fudge.Vector3 = cube.mtxWorld.translation;
                 cube.cmpTransform.local.translation = position;
-                L08_FudgeCraft_Collision.grid.push(position, new L08_FudgeCraft_Collision.GridElement(cube));
+                grid.push(position, new GridElement(cube));
             }
         }
     }
-    Control.transformations = Control.defineControls();
-    L08_FudgeCraft_Collision.Control = Control;
-})(L08_FudgeCraft_Collision || (L08_FudgeCraft_Collision = {}));
-//# sourceMappingURL=Control.js.map
+}

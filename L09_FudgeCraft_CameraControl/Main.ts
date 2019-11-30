@@ -1,4 +1,4 @@
-namespace L08_FudgeCraft_Collision {
+namespace L09_FudgeCraft_CameraControl {
     import fudge = FudgeCore;
 
     window.addEventListener("load", hndLoad);
@@ -13,14 +13,18 @@ namespace L08_FudgeCraft_Collision {
         fudge.RenderManager.initialize(true);
         fudge.Debug.log("Canvas", canvas);
 
+        //Camera
+        let camera: CameraOrbit = new CameraOrbit(75);
+
+        //Light
         let cmpLight: fudge.ComponentLight = new fudge.ComponentLight(new fudge.LightDirectional(fudge.Color.WHITE));
         cmpLight.pivot.lookAt(new fudge.Vector3(0.5, 1, 0.8));
         game.addComponent(cmpLight);
         let cmpLightAmbient: fudge.ComponentLight = new fudge.ComponentLight(new fudge.LightAmbient(fudge.Color.DARK_GREY));
         game.addComponent(cmpLightAmbient);
-        
+
         viewport = new fudge.Viewport();
-        viewport.initialize("Viewport", game, cmpCamera, canvas);
+        viewport.initialize("Viewport", game, camera.getCmpCamera(), canvas);
         fudge.Debug.log("Viewport", viewport);
         viewport.draw();
         
@@ -31,6 +35,9 @@ namespace L08_FudgeCraft_Collision {
         fudge.Debug.log("Game", game);
         
         window.addEventListener("keydown", hndKeyDown);
+        //window.addEventListener("wheel", hndWheel);
+        window.addEventListener("mousemove", hndMousemove);
+
         
         //test();
     }
@@ -80,5 +87,18 @@ namespace L08_FudgeCraft_Collision {
         let fragment: Fragment = Fragment.getRandom();
         control.cmpTransform.local = fudge.Matrix4x4.IDENTITY;
         control.setFragment(fragment);
+    }
+
+    // function hndWheel(_event: Event): void {
+    //     camera.pivot.translateZ(5);
+
+    //     fudge.Debug.log(camera);
+    
+    //     viewport.draw();
+    // }
+
+    function hndMousemove(_event: Event): void {
+        fudge.Debug.log(_event);
+        viewport.draw();
     }
 }

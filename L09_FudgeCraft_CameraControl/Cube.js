@@ -1,6 +1,6 @@
 "use strict";
-var L08_FudgeCraft_Collision;
-(function (L08_FudgeCraft_Collision) {
+var L09_FudgeCraft_CameraControl;
+(function (L09_FudgeCraft_CameraControl) {
     var fudge = FudgeCore;
     let CUBE_TYPE;
     (function (CUBE_TYPE) {
@@ -11,7 +11,7 @@ var L08_FudgeCraft_Collision;
         CUBE_TYPE["MAGENTA"] = "Magenta";
         CUBE_TYPE["CYAN"] = "Cyan";
         CUBE_TYPE["GREY"] = "Grey";
-    })(CUBE_TYPE = L08_FudgeCraft_Collision.CUBE_TYPE || (L08_FudgeCraft_Collision.CUBE_TYPE = {}));
+    })(CUBE_TYPE = L09_FudgeCraft_CameraControl.CUBE_TYPE || (L09_FudgeCraft_CameraControl.CUBE_TYPE = {}));
     class Cube extends fudge.Node {
         constructor(_type, _position) {
             super("Cube." + _type);
@@ -37,6 +37,6 @@ var L08_FudgeCraft_Collision;
     }
     Cube.mesh = new fudge.MeshCube();
     Cube.materials = Cube.createMaterials();
-    L08_FudgeCraft_Collision.Cube = Cube;
-})(L08_FudgeCraft_Collision || (L08_FudgeCraft_Collision = {}));
+    L09_FudgeCraft_CameraControl.Cube = Cube;
+})(L09_FudgeCraft_CameraControl || (L09_FudgeCraft_CameraControl = {}));
 //# sourceMappingURL=Cube.js.map

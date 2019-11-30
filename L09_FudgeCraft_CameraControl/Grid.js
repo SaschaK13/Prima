@@ -1,24 +1,24 @@
 "use strict";
-var L08_FudgeCraft_Collision;
-(function (L08_FudgeCraft_Collision) {
+var L09_FudgeCraft_CameraControl;
+(function (L09_FudgeCraft_CameraControl) {
     var fudge = FudgeCore;
     class GridElement {
         constructor(_cube = null) {
             this.cube = _cube;
         }
     }
-    L08_FudgeCraft_Collision.GridElement = GridElement;
+    L09_FudgeCraft_CameraControl.GridElement = GridElement;
     class Grid extends Map {
         // private grid: Map<string, Cube> = new Map();
         constructor() {
             super();
-            this.push(fudge.Vector3.ZERO(), new GridElement(new L08_FudgeCraft_Collision.Cube(L08_FudgeCraft_Collision.CUBE_TYPE.GREY, fudge.Vector3.ZERO())));
+            this.push(fudge.Vector3.ZERO(), new GridElement(new L09_FudgeCraft_CameraControl.Cube(L09_FudgeCraft_CameraControl.CUBE_TYPE.GREY, fudge.Vector3.ZERO())));
         }
         push(_position, _element = null) {
             let key = this.toKey(_position);
             this.set(key, _element);
             if (_element)
-                L08_FudgeCraft_Collision.game.appendChild(_element.cube);
+                L09_FudgeCraft_CameraControl.game.appendChild(_element.cube);
         }
         pull(_position) {
             let key = this.toKey(_position);
@@ -30,7 +30,7 @@ var L08_FudgeCraft_Collision;
             let element = this.get(key);
             this.delete(key);
             if (element)
-                L08_FudgeCraft_Collision.game.removeChild(element.cube);
+                L09_FudgeCraft_CameraControl.game.removeChild(element.cube);
             return element;
         }
         toKey(_position) {
@@ -39,6 +39,6 @@ var L08_FudgeCraft_Collision;
             return key;
         }
     }
-    L08_FudgeCraft_Collision.Grid = Grid;
-})(L08_FudgeCraft_Collision || (L08_FudgeCraft_Collision = {}));
+    L09_FudgeCraft_CameraControl.Grid = Grid;
+})(L09_FudgeCraft_CameraControl || (L09_FudgeCraft_CameraControl = {}));
 //# sourceMappingURL=Grid.js.map
