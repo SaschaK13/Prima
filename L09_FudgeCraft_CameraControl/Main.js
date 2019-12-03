@@ -6,12 +6,13 @@ var L09_FudgeCraft_CameraControl;
     L09_FudgeCraft_CameraControl.game = new fudge.Node("FudgeCraft");
     L09_FudgeCraft_CameraControl.grid = new L09_FudgeCraft_CameraControl.Grid();
     let control = new L09_FudgeCraft_CameraControl.Control();
+    let camera;
     function hndLoad(_event) {
         const canvas = document.querySelector("canvas");
         fudge.RenderManager.initialize(true);
         fudge.Debug.log("Canvas", canvas);
         //Camera
-        let camera = new L09_FudgeCraft_CameraControl.CameraOrbit(75);
+        camera = new L09_FudgeCraft_CameraControl.CameraOrbit(75);
         //Light
         let cmpLight = new fudge.ComponentLight(new fudge.LightDirectional(fudge.Color.WHITE));
         cmpLight.pivot.lookAt(new fudge.Vector3(0.5, 1, 0.8));
@@ -19,15 +20,16 @@ var L09_FudgeCraft_CameraControl;
         let cmpLightAmbient = new fudge.ComponentLight(new fudge.LightAmbient(fudge.Color.DARK_GREY));
         L09_FudgeCraft_CameraControl.game.addComponent(cmpLightAmbient);
         L09_FudgeCraft_CameraControl.viewport = new fudge.Viewport();
-        L09_FudgeCraft_CameraControl.viewport.initialize("Viewport", L09_FudgeCraft_CameraControl.game, camera.getCmpCamera(), canvas);
+        L09_FudgeCraft_CameraControl.viewport.initialize("Viewport", L09_FudgeCraft_CameraControl.game, camera.cmpCamera, canvas);
         fudge.Debug.log("Viewport", L09_FudgeCraft_CameraControl.viewport);
         L09_FudgeCraft_CameraControl.viewport.draw();
         startRandomFragment();
         L09_FudgeCraft_CameraControl.game.appendChild(control);
+        L09_FudgeCraft_CameraControl.game.appendChild(camera);
         L09_FudgeCraft_CameraControl.viewport.draw();
         fudge.Debug.log("Game", L09_FudgeCraft_CameraControl.game);
         window.addEventListener("keydown", hndKeyDown);
-        //window.addEventListener("wheel", hndWheel);
+        window.addEventListener("wheel", hndWheel);
         window.addEventListener("mousemove", hndMousemove);
         //test();
     }
@@ -39,7 +41,7 @@ var L09_FudgeCraft_CameraControl;
         let transformation = L09_FudgeCraft_CameraControl.Control.transformations[_event.code];
         if (transformation)
             move(transformation);
-        // ƒ.RenderManager.update();
+        // fudge.RenderManager.update();
         L09_FudgeCraft_CameraControl.viewport.draw();
     }
     function move(_transformation) {
@@ -60,7 +62,7 @@ var L09_FudgeCraft_CameraControl;
         move.rotation.scale(1 / animationSteps);
         fudge.Time.game.setTimer(10, animationSteps, function () {
             control.move(move);
-            // ƒ.RenderManager.update();
+            // fudge.RenderManager.update();
             L09_FudgeCraft_CameraControl.viewport.draw();
         });
     }
@@ -70,13 +72,21 @@ var L09_FudgeCraft_CameraControl;
         control.setFragment(fragment);
     }
     L09_FudgeCraft_CameraControl.startRandomFragment = startRandomFragment;
-    // function hndWheel(_event: Event): void {
-    //     camera.pivot.translateZ(5);
-    //     fudge.Debug.log(camera);
-    //     viewport.draw();
-    // }
-    function hndMousemove(_event) {
+    function hndWheel(_event) {
+        //camera.pivot.translateZ(5);
+        camera.moveDistance(_event.deltaY);
         fudge.Debug.log(_event);
+        L09_FudgeCraft_CameraControl.viewport.draw();
+    }
+    function hndMousemove(_event) {
+        let movementX = _event.movementX;
+        let movementY = _event.movementY;
+        fudge.Debug.log(_event.movementX);
+        fudge.Debug.log(_event.movementY);
+        camera.setRotationX(movementY);
+        camera.setRotationY(movementX);
+        //camera.cmpTransform.local.rotation.y = movementY;
+        fudge.RenderManager.update();
         L09_FudgeCraft_CameraControl.viewport.draw();
     }
 })(L09_FudgeCraft_CameraControl || (L09_FudgeCraft_CameraControl = {}));

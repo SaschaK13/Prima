@@ -2,48 +2,51 @@ namespace L09_FudgeCraft_CameraControl {
     import fudge = FudgeCore;
 
     export class CameraOrbit extends fudge.Node {
-
-        //rotatorX: fudge.Node = new fudge.Node("RotatorX");
+        //rotatorX: fudge.Node;
         maxRotX: number = 75;
         minDistance: number = 1;
-        //private camera: fudge.ComponentCamera;
 
         constructor(_maxRotX: number) {
             super("CameraOrbit");
+            
+            this.maxRotX = Math.min(_maxRotX, 89);
 
-            let cmpTransform: fudge.ComponentTransform = new fudge.ComponentTransform;
+            let cmpTransform: fudge.ComponentTransform = new fudge.ComponentTransform();
             this.addComponent(cmpTransform);
 
             let rotatorX: fudge.Node = new fudge.Node("CameraRotX");
+            rotatorX.addComponent(new fudge.ComponentTransform());
             this.appendChild(rotatorX);
 
             let cmpCamera: fudge.ComponentCamera = new fudge.ComponentCamera();
-            cmpCamera.pivot.lookAt(fudge.Vector3.ZERO());
             cmpCamera.backgroundColor = fudge.Color.WHITE;
             rotatorX.addComponent(cmpCamera);
             this.setDistance(20);
         }
 
-        getCmpCamera(): fudge.ComponentCamera { //get cmpCamera()
-            let rotatorX: fudge.Node = this.getChildrenByName("CameraRotX")[0];
-            return rotatorX.getComponent(fudge.ComponentCamera);
+        get cmpCamera(): fudge.ComponentCamera {
+            return this.rotatorX.getComponent(fudge.ComponentCamera);
         }
 
-        rotate(_delta: fudge.Vector3): void {
-            //do stuff
-        }
-
-        setRotation(_delta: fudge.Vector3): void {
-            this.cmpTransform.local.rotation.y = _delta.y;
+        get rotatorX(): fudge.Node {
+            return this.getChildrenByName("CameraRotX")[0];
         }
 
         setDistance(_distance: number): void {
-            let newDistance: number = Math.max(this.minDistance, _distance); //max() returns greatest value
-            this.getCmpCamera().pivot.translation.z = newDistance;
+            let newDistance: number = Math.max(this.minDistance, _distance);
+            this.cmpCamera.pivot.translation = fudge.Vector3.Z(newDistance);
         }
 
         moveDistance(_delta: number): void {
-            this.setDistance(this.getCmpCamera().pivot.translation.z + _delta);
+            this.setDistance(this.cmpCamera.pivot.translation.z + _delta);
+        }
+
+        setRotationY(_angle: number): void {
+            this.cmpTransform.local.rotation = fudge.Vector3.Y(this.cmpTransform.local.rotation.y + _angle);
+        }
+
+        setRotationX(_angle: number): void {
+            this.rotatorX.cmpTransform.local.rotation = fudge.Vector3.X(this.rotatorX.cmpTransform.local.rotation.x - _angle);
         }
     }
 }

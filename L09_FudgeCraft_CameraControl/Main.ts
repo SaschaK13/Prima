@@ -6,6 +6,7 @@ namespace L09_FudgeCraft_CameraControl {
     export let game: fudge.Node = new fudge.Node("FudgeCraft");
     export let grid: Grid = new Grid();
     let control: Control = new Control();
+    let camera: CameraOrbit;
     export let viewport: fudge.Viewport;
 
     function hndLoad(_event: Event): void {
@@ -14,7 +15,7 @@ namespace L09_FudgeCraft_CameraControl {
         fudge.Debug.log("Canvas", canvas);
 
         //Camera
-        let camera: CameraOrbit = new CameraOrbit(75);
+        camera = new CameraOrbit(75);
 
         //Light
         let cmpLight: fudge.ComponentLight = new fudge.ComponentLight(new fudge.LightDirectional(fudge.Color.WHITE));
@@ -24,21 +25,21 @@ namespace L09_FudgeCraft_CameraControl {
         game.addComponent(cmpLightAmbient);
 
         viewport = new fudge.Viewport();
-        viewport.initialize("Viewport", game, camera.getCmpCamera(), canvas);
+        viewport.initialize("Viewport", game, camera.cmpCamera, canvas);
         fudge.Debug.log("Viewport", viewport);
         viewport.draw();
         
         startRandomFragment();
         game.appendChild(control);
+        game.appendChild(camera);
         
         viewport.draw();
         fudge.Debug.log("Game", game);
         
         window.addEventListener("keydown", hndKeyDown);
-        //window.addEventListener("wheel", hndWheel);
+        window.addEventListener("wheel", hndWheel);
         window.addEventListener("mousemove", hndMousemove);
 
-        
         //test();
     }
 
@@ -52,7 +53,7 @@ namespace L09_FudgeCraft_CameraControl {
         if (transformation)
             move(transformation);
 
-        // ƒ.RenderManager.update();
+        // fudge.RenderManager.update();
         viewport.draw();
     }
 
@@ -78,7 +79,7 @@ namespace L09_FudgeCraft_CameraControl {
 
         fudge.Time.game.setTimer(10, animationSteps, function (): void {
             control.move(move);
-            // ƒ.RenderManager.update();
+            // fudge.RenderManager.update();
             viewport.draw();
         });
     }
@@ -89,16 +90,27 @@ namespace L09_FudgeCraft_CameraControl {
         control.setFragment(fragment);
     }
 
-    // function hndWheel(_event: Event): void {
-    //     camera.pivot.translateZ(5);
-
-    //     fudge.Debug.log(camera);
-    
-    //     viewport.draw();
-    // }
-
-    function hndMousemove(_event: Event): void {
+    function hndWheel(_event: WheelEvent): void {
+        //camera.pivot.translateZ(5);
+        camera.moveDistance(_event.deltaY);
+        
         fudge.Debug.log(_event);
+        viewport.draw();
+    }
+
+    function hndMousemove(_event: MouseEvent): void {
+        let movementX: number = _event.movementX;
+        let movementY: number = _event.movementY;
+
+        fudge.Debug.log(_event.movementX);
+        fudge.Debug.log(_event.movementY);
+
+        camera.setRotationX(movementY);
+        camera.setRotationY(movementX);
+        
+        //camera.cmpTransform.local.rotation.y = movementY;
+       
+        fudge.RenderManager.update();
         viewport.draw();
     }
 }
