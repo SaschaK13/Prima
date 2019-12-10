@@ -8,7 +8,9 @@ declare namespace L09_FudgeCraft_CameraControl {
         readonly rotatorX: fudge.Node;
         setDistance(_distance: number): void;
         moveDistance(_delta: number): void;
-        setRotationY(_angle: number): void;
         setRotationX(_angle: number): void;
+        setRotationY(_angle: number): void;
+        rotateX(_delta: number): void;
+        rotateY(_delta: number): void;
     }
 }

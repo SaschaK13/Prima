@@ -32,11 +32,18 @@ var L09_FudgeCraft_CameraControl;
         moveDistance(_delta) {
             this.setDistance(this.cmpCamera.pivot.translation.z + _delta);
         }
+        setRotationX(_angle) {
+            this.rotatorX.cmpTransform.local.rotation = fudge.Vector3.X(this.rotatorX.cmpTransform.local.rotation.x - _angle);
+        }
         setRotationY(_angle) {
             this.cmpTransform.local.rotation = fudge.Vector3.Y(this.cmpTransform.local.rotation.y + _angle);
         }
-        setRotationX(_angle) {
-            this.rotatorX.cmpTransform.local.rotation = fudge.Vector3.X(this.rotatorX.cmpTransform.local.rotation.x - _angle);
+        rotateX(_delta) {
+            let angle = this.rotatorX.cmpTransform.local.rotation.x + _delta;
+            this.setRotationX(angle);
+        }
+        rotateY(_delta) {
+            this.cmpTransform.local.rotateY(_delta);
         }
     }
     L09_FudgeCraft_CameraControl.CameraOrbit = CameraOrbit;

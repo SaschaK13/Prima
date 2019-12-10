@@ -37,8 +37,8 @@ namespace L09_FudgeCraft_CameraControl {
         fudge.Debug.log("Game", game);
         
         window.addEventListener("keydown", hndKeyDown);
-        window.addEventListener("wheel", hndWheel);
-        window.addEventListener("mousemove", hndMousemove);
+        canvas.addEventListener("wheel", hndWheel);
+        canvas.addEventListener("mousemove", hndMousemove);
 
         //test();
     }
@@ -105,12 +105,10 @@ namespace L09_FudgeCraft_CameraControl {
         fudge.Debug.log(_event.movementX);
         fudge.Debug.log(_event.movementY);
 
+        //use rotateX & rotateY 
         camera.setRotationX(movementY);
         camera.setRotationY(movementX);
-        
-        //camera.cmpTransform.local.rotation.y = movementY;
-       
-        fudge.RenderManager.update();
+
         viewport.draw();
     }
 }

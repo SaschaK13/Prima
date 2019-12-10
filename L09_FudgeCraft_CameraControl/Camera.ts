@@ -41,12 +41,21 @@ namespace L09_FudgeCraft_CameraControl {
             this.setDistance(this.cmpCamera.pivot.translation.z + _delta);
         }
 
+        setRotationX(_angle: number): void {
+            this.rotatorX.cmpTransform.local.rotation = fudge.Vector3.X(this.rotatorX.cmpTransform.local.rotation.x - _angle);
+        }
+
         setRotationY(_angle: number): void {
             this.cmpTransform.local.rotation = fudge.Vector3.Y(this.cmpTransform.local.rotation.y + _angle);
         }
 
-        setRotationX(_angle: number): void {
-            this.rotatorX.cmpTransform.local.rotation = fudge.Vector3.X(this.rotatorX.cmpTransform.local.rotation.x - _angle);
+        rotateX(_delta: number): void {
+            let angle: number = this.rotatorX.cmpTransform.local.rotation.x + _delta;
+            this.setRotationX(angle);
+        }
+
+        rotateY(_delta: number): void {
+            this.cmpTransform.local.rotateY(_delta);
         }
     }
 }

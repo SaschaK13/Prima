@@ -29,8 +29,8 @@ var L09_FudgeCraft_CameraControl;
         L09_FudgeCraft_CameraControl.viewport.draw();
         fudge.Debug.log("Game", L09_FudgeCraft_CameraControl.game);
         window.addEventListener("keydown", hndKeyDown);
-        window.addEventListener("wheel", hndWheel);
-        window.addEventListener("mousemove", hndMousemove);
+        canvas.addEventListener("wheel", hndWheel);
+        canvas.addEventListener("mousemove", hndMousemove);
         //test();
     }
     function hndKeyDown(_event) {
@@ -83,10 +83,9 @@ var L09_FudgeCraft_CameraControl;
         let movementY = _event.movementY;
         fudge.Debug.log(_event.movementX);
         fudge.Debug.log(_event.movementY);
+        //use rotateX & rotateY 
         camera.setRotationX(movementY);
         camera.setRotationY(movementX);
-        //camera.cmpTransform.local.rotation.y = movementY;
-        fudge.RenderManager.update();
         L09_FudgeCraft_CameraControl.viewport.draw();
     }
 })(L09_FudgeCraft_CameraControl || (L09_FudgeCraft_CameraControl = {}));
