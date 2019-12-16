@@ -97,10 +97,8 @@ namespace L10_FudgeCraft_DetectCombos {
                 for (let element of combo) {
                     let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
                     console.log(element.cube.name, mtxLocal.translation.getMutator());
-                    // mtxLocal.rotateX(45);
-                    // mtxLocal.rotateY(45);
-                    // mtxLocal.rotateY(45, true);
-                    mtxLocal.scale(ƒ.Vector3.ONE(0.5));
+                    // mtxLocal.scale(ƒ.Vector3.ONE(0.5));
+                    grid.pop(mtxLocal.translation);
                 }
     }
 

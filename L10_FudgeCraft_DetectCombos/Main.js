@@ -80,10 +80,8 @@ var L10_FudgeCraft_DetectCombos;
                 for (let element of combo) {
                     let mtxLocal = element.cube.cmpTransform.local;
                     console.log(element.cube.name, mtxLocal.translation.getMutator());
-                    // mtxLocal.rotateX(45);
-                    // mtxLocal.rotateY(45);
-                    // mtxLocal.rotateY(45, true);
-                    mtxLocal.scale(L10_FudgeCraft_DetectCombos.ƒ.Vector3.ONE(0.5));
+                    // mtxLocal.scale(ƒ.Vector3.ONE(0.5));
+                    L10_FudgeCraft_DetectCombos.grid.pop(mtxLocal.translation);
                 }
     }
     function move(_transformation) {
