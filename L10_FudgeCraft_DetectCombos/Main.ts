@@ -1,29 +1,29 @@
 namespace L10_FudgeCraft_DetectCombos {
-    export import fudge = FudgeCore;
+    export import ƒ = FudgeCore;
 
     window.addEventListener("load", hndLoad);
 
-    export let game: fudge.Node = new fudge.Node("FudgeCraft");
+    export let game: ƒ.Node = new ƒ.Node("FudgeCraft");
     export let grid: Grid = new Grid();
     let control: Control = new Control();
-    let viewport: fudge.Viewport;
+    let viewport: ƒ.Viewport;
     let camera: CameraOrbit;
     let speedCameraRotation: number = 0.2;
     let speedCameraTranslation: number = 0.02;
 
     function hndLoad(_event: Event): void {
         const canvas: HTMLCanvasElement = document.querySelector("canvas");
-        fudge.RenderManager.initialize(true);
-        fudge.Debug.log("Canvas", canvas);
+        ƒ.RenderManager.initialize(true);
+        ƒ.Debug.log("Canvas", canvas);
 
         // enable unlimited mouse-movement (user needs to click on canvas first)
         canvas.addEventListener("click", canvas.requestPointerLock);
 
         // set lights
-        let cmpLight: fudge.ComponentLight = new fudge.ComponentLight(new fudge.LightDirectional(fudge.Color.WHITE));
-        cmpLight.pivot.lookAt(new fudge.Vector3(0.5, 1, 0.8));
-        game.addComponent(cmpLight);
-        let cmpLightAmbient: fudge.ComponentLight = new fudge.ComponentLight(new fudge.LightAmbient(fudge.Color.DARK_GREY));
+        let cmpLight: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightDirectional(ƒ.Color.WHITE));
+        cmpLight.pivot.lookAt(new ƒ.Vector3(0.5, 1, 0.8));
+        // game.addComponent(cmpLight);
+        let cmpLightAmbient: ƒ.ComponentLight = new ƒ.ComponentLight(new ƒ.LightAmbient(ƒ.Color.DARK_GREY));
         game.addComponent(cmpLightAmbient);
 
         // setup orbiting camera
@@ -31,35 +31,40 @@ namespace L10_FudgeCraft_DetectCombos {
         game.appendChild(camera);
         camera.setRotationX(-20);
         camera.setRotationY(20);
+        camera.cmpCamera.getContainer().addComponent(cmpLight);
 
         // setup viewport
-        viewport = new fudge.Viewport();
+        viewport = new ƒ.Viewport();
         viewport.initialize("Viewport", game, camera.cmpCamera, canvas);
-        fudge.Debug.log("Viewport", viewport);
+        ƒ.Debug.log("Viewport", viewport);
 
         // setup event handling
-        viewport.activatePointerEvent(fudge.EVENT_POINTER.MOVE, true);
-        viewport.activateWheelEvent(fudge.EVENT_WHEEL.WHEEL, true);
-        viewport.addEventListener(fudge.EVENT_POINTER.MOVE, hndPointerMove);
-        viewport.addEventListener(fudge.EVENT_WHEEL.WHEEL, hndWheelMove);
+        viewport.activatePointerEvent(ƒ.EVENT_POINTER.MOVE, true);
+        viewport.activateWheelEvent(ƒ.EVENT_WHEEL.WHEEL, true);
+        viewport.addEventListener(ƒ.EVENT_POINTER.MOVE, hndPointerMove);
+        viewport.addEventListener(ƒ.EVENT_WHEEL.WHEEL, hndWheelMove);
         window.addEventListener("keydown", hndKeyDown);
 
-        // start game
-        startRandomFragment();
         game.appendChild(control);
 
+        startGame();
+        // startTests();
+
         updateDisplay();
-        fudge.Debug.log("Game", game);
+        ƒ.Debug.log("Game", game);
 
-        //test();
     }
 
-    function updateDisplay(): void {
+    function startGame(): void {
+        grid.push(ƒ.Vector3.ZERO(), new GridElement(new Cube(CUBE_TYPE.GREY, ƒ.Vector3.ZERO())));
+        startRandomFragment();
+    }
+
+    export function updateDisplay(): void {
         viewport.draw();
-
     }
 
-    function hndPointerMove(_event: fudge.PointerEventƒ): void {
+    function hndPointerMove(_event: ƒ.PointerEventƒ): void {
         // console.log(_event.movementX, _event.movementY);
         camera.rotateY(_event.movementX * speedCameraRotation);
         camera.rotateX(_event.movementY * speedCameraRotation);
@@ -72,8 +77,10 @@ namespace L10_FudgeCraft_DetectCombos {
     }
 
     function hndKeyDown(_event: KeyboardEvent): void {
-        if (_event.code == fudge.KEYBOARD_CODE.SPACE) {
-            control.freeze();
+        if (_event.code == ƒ.KEYBOARD_CODE.SPACE) {
+            let frozen: GridElement[] = control.freeze();
+            let combos: Combos = new Combos(frozen);
+            handleCombos(combos);
             startRandomFragment();
         }
 
@@ -84,16 +91,29 @@ namespace L10_FudgeCraft_DetectCombos {
         updateDisplay();
     }
 
+    function handleCombos(_combos: Combos): void {
+        for (let combo of _combos.found)
+            if (combo.length > 2)
+                for (let element of combo) {
+                    let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
+                    console.log(element.cube.name, mtxLocal.translation.getMutator());
+                    // mtxLocal.rotateX(45);
+                    // mtxLocal.rotateY(45);
+                    // mtxLocal.rotateY(45, true);
+                    mtxLocal.scale(ƒ.Vector3.ONE(0.5));
+                }
+    }
+
     function move(_transformation: Transformation): void {
         let animationSteps: number = 10;
         let fullRotation: number = 90;
         let fullTranslation: number = 1;
         let move: Transformation = {
-            rotation: _transformation.rotation ? fudge.Vector3.SCALE(_transformation.rotation, fullRotation) : new fudge.Vector3(),
-            translation: _transformation.translation ? fudge.Vector3.SCALE(_transformation.translation, fullTranslation) : new fudge.Vector3()
+            rotation: _transformation.rotation ? ƒ.Vector3.SCALE(_transformation.rotation, fullRotation) : new ƒ.Vector3(),
+            translation: _transformation.translation ? ƒ.Vector3.SCALE(_transformation.translation, fullTranslation) : new ƒ.Vector3()
         };
 
-        let timers: fudge.Timers = fudge.Time.game.getTimers();
+        let timers: ƒ.Timers = ƒ.Time.game.getTimers();
         if (Object.keys(timers).length > 0)
             return;
 
@@ -104,7 +124,7 @@ namespace L10_FudgeCraft_DetectCombos {
         move.translation.scale(1 / animationSteps);
         move.rotation.scale(1 / animationSteps);
 
-        fudge.Time.game.setTimer(10, animationSteps, function (): void {
+        ƒ.Time.game.setTimer(10, animationSteps, function (): void {
             control.move(move);
             updateDisplay();
         });
@@ -112,7 +132,7 @@ namespace L10_FudgeCraft_DetectCombos {
 
     export function startRandomFragment(): void {
         let fragment: Fragment = Fragment.getRandom();
-        control.cmpTransform.local = fudge.Matrix4x4.IDENTITY;
+        control.cmpTransform.local = ƒ.Matrix4x4.IDENTITY;
         control.setFragment(fragment);
     }
 }

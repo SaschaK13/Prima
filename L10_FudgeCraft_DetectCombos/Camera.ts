@@ -1,8 +1,8 @@
 namespace L10_FudgeCraft_DetectCombos {
-    import fudge = FudgeCore;
+    import ƒ = FudgeCore;
 
-    export class CameraOrbit extends fudge.Node {
-        //rotatorX: fudge.Node;
+    export class CameraOrbit extends ƒ.Node {
+        //rotatorX: ƒ.Node;
         maxRotX: number = 75;
         minDistance: number = 10;
 
@@ -11,30 +11,30 @@ namespace L10_FudgeCraft_DetectCombos {
 
             this.maxRotX = Math.min(_maxRotX, 89);
 
-            let cmpTransform: fudge.ComponentTransform = new fudge.ComponentTransform();
+            let cmpTransform: ƒ.ComponentTransform = new ƒ.ComponentTransform();
             this.addComponent(cmpTransform);
 
-            let rotatorX: fudge.Node = new fudge.Node("CameraRotX");
-            rotatorX.addComponent(new fudge.ComponentTransform());
+            let rotatorX: ƒ.Node = new ƒ.Node("CameraRotX");
+            rotatorX.addComponent(new ƒ.ComponentTransform());
             this.appendChild(rotatorX);
 
-            let cmpCamera: fudge.ComponentCamera = new fudge.ComponentCamera();
-            cmpCamera.backgroundColor = fudge.Color.WHITE;
+            let cmpCamera: ƒ.ComponentCamera = new ƒ.ComponentCamera();
+            cmpCamera.backgroundColor = ƒ.Color.WHITE;
             rotatorX.addComponent(cmpCamera);
             this.setDistance(20);
         }
 
-        get cmpCamera(): fudge.ComponentCamera {
-            return this.rotatorX.getComponent(fudge.ComponentCamera);
+        get cmpCamera(): ƒ.ComponentCamera {
+            return this.rotatorX.getComponent(ƒ.ComponentCamera);
         }
 
-        get rotatorX(): fudge.Node {
+        get rotatorX(): ƒ.Node {
             return this.getChildrenByName("CameraRotX")[0];
         }
 
         setDistance(_distance: number): void {
             let newDistance: number = Math.max(this.minDistance, _distance);
-            this.cmpCamera.pivot.translation = fudge.Vector3.Z(newDistance);
+            this.cmpCamera.pivot.translation = ƒ.Vector3.Z(newDistance);
         }
 
         moveDistance(_delta: number): void {
@@ -42,12 +42,12 @@ namespace L10_FudgeCraft_DetectCombos {
         }
 
         setRotationY(_angle: number): void {
-            this.cmpTransform.local.rotation = fudge.Vector3.Y(_angle);
+            this.cmpTransform.local.rotation = ƒ.Vector3.Y(_angle);
         }
 
         setRotationX(_angle: number): void {
             _angle = Math.min(Math.max(-this.maxRotX, _angle), this.maxRotX);
-            this.rotatorX.cmpTransform.local.rotation = fudge.Vector3.X(_angle);
+            this.rotatorX.cmpTransform.local.rotation = ƒ.Vector3.X(_angle);
         }
 
         rotateY(_delta: number): void {

@@ -1,5 +1,5 @@
 declare namespace L10_FudgeCraft_DetectCombos {
-    import fudge = FudgeCore;
+    import ƒ = FudgeCore;
     enum CUBE_TYPE {
         GREEN = "Green",
         RED = "Red",
@@ -9,10 +9,10 @@ declare namespace L10_FudgeCraft_DetectCombos {
         CYAN = "Cyan",
         GREY = "Grey"
     }
-    class Cube extends fudge.Node {
+    class Cube extends ƒ.Node {
         private static mesh;
         private static materials;
-        constructor(_type: CUBE_TYPE, _position: fudge.Vector3);
+        constructor(_type: CUBE_TYPE, _position: ƒ.Vector3);
         private static createMaterials;
     }
 }

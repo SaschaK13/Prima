@@ -1,6 +1,7 @@
 declare namespace L10_FudgeCraft_DetectCombos {
-    export import fudge = FudgeCore;
-    let game: fudge.Node;
+    export import ƒ = FudgeCore;
+    let game: ƒ.Node;
     let grid: Grid;
+    function updateDisplay(): void;
     function startRandomFragment(): void;
 }

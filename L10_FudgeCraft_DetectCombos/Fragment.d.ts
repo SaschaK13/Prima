@@ -1,9 +1,9 @@
 declare namespace L10_FudgeCraft_DetectCombos {
-    import fudge = FudgeCore;
-    class Fragment extends fudge.Node {
+    import ƒ = FudgeCore;
+    class Fragment extends ƒ.Node {
         private static shapes;
-        position: fudge.Vector3;
-        constructor(_shape: number, _position?: fudge.Vector3);
+        position: ƒ.Vector3;
+        constructor(_shape: number, _position?: ƒ.Vector3);
         static getRandom(): Fragment;
         private static getShapeArray;
         private static getRandomEnum;

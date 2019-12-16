@@ -1,24 +1,24 @@
 "use strict";
 var L10_FudgeCraft_DetectCombos;
 (function (L10_FudgeCraft_DetectCombos) {
-    var fudge = FudgeCore;
-    class Control extends fudge.Node {
+    var ƒ = FudgeCore;
+    class Control extends ƒ.Node {
         constructor() {
             super("Control");
-            this.addComponent(new fudge.ComponentTransform());
+            this.addComponent(new ƒ.ComponentTransform());
         }
         static defineControls() {
             let controls = {};
-            controls[fudge.KEYBOARD_CODE.ARROW_UP] = { rotation: fudge.Vector3.X(-1) };
-            controls[fudge.KEYBOARD_CODE.ARROW_DOWN] = { rotation: fudge.Vector3.X(1) };
-            controls[fudge.KEYBOARD_CODE.ARROW_LEFT] = { rotation: fudge.Vector3.Y(-1) };
-            controls[fudge.KEYBOARD_CODE.ARROW_RIGHT] = { rotation: fudge.Vector3.Y(1) };
-            controls[fudge.KEYBOARD_CODE.W] = { translation: fudge.Vector3.Z(-1) };
-            controls[fudge.KEYBOARD_CODE.S] = { translation: fudge.Vector3.Z(1) };
-            controls[fudge.KEYBOARD_CODE.A] = { translation: fudge.Vector3.X(-1) };
-            controls[fudge.KEYBOARD_CODE.D] = { translation: fudge.Vector3.X(1) };
-            controls[fudge.KEYBOARD_CODE.SHIFT_LEFT] = controls[fudge.KEYBOARD_CODE.SHIFT_RIGHT] = { translation: fudge.Vector3.Y(1) };
-            controls[fudge.KEYBOARD_CODE.CTRL_LEFT] = controls[fudge.KEYBOARD_CODE.CTRL_RIGHT] = { translation: fudge.Vector3.Y(-1) };
+            controls[ƒ.KEYBOARD_CODE.ARROW_UP] = { rotation: ƒ.Vector3.X(-1) };
+            controls[ƒ.KEYBOARD_CODE.ARROW_DOWN] = { rotation: ƒ.Vector3.X(1) };
+            controls[ƒ.KEYBOARD_CODE.ARROW_LEFT] = { rotation: ƒ.Vector3.Y(-1) };
+            controls[ƒ.KEYBOARD_CODE.ARROW_RIGHT] = { rotation: ƒ.Vector3.Y(1) };
+            controls[ƒ.KEYBOARD_CODE.W] = { translation: ƒ.Vector3.Z(-1) };
+            controls[ƒ.KEYBOARD_CODE.S] = { translation: ƒ.Vector3.Z(1) };
+            controls[ƒ.KEYBOARD_CODE.A] = { translation: ƒ.Vector3.X(-1) };
+            controls[ƒ.KEYBOARD_CODE.D] = { translation: ƒ.Vector3.X(1) };
+            controls[ƒ.KEYBOARD_CODE.SHIFT_LEFT] = controls[ƒ.KEYBOARD_CODE.SHIFT_RIGHT] = { translation: ƒ.Vector3.Y(1) };
+            controls[ƒ.KEYBOARD_CODE.CTRL_LEFT] = controls[ƒ.KEYBOARD_CODE.CTRL_RIGHT] = { translation: ƒ.Vector3.Y(-1) };
             return controls;
         }
         setFragment(_fragment) {
@@ -39,7 +39,7 @@ var L10_FudgeCraft_DetectCombos;
             let save = [mtxContainer.getMutator(), mtxFragment.getMutator()];
             mtxFragment.rotate(_transformation.rotation, true);
             mtxContainer.translate(_transformation.translation);
-            fudge.RenderManager.update();
+            ƒ.RenderManager.update();
             let collisions = [];
             for (let cube of this.fragment.getChildren()) {
                 let element = L10_FudgeCraft_DetectCombos.grid.pull(cube.mtxWorld.translation);
@@ -51,11 +51,15 @@ var L10_FudgeCraft_DetectCombos;
             return collisions;
         }
         freeze() {
+            let frozen = [];
             for (let cube of this.fragment.getChildren()) {
                 let position = cube.mtxWorld.translation;
                 cube.cmpTransform.local.translation = position;
-                L10_FudgeCraft_DetectCombos.grid.push(position, new L10_FudgeCraft_DetectCombos.GridElement(cube));
+                let element = new L10_FudgeCraft_DetectCombos.GridElement(cube);
+                L10_FudgeCraft_DetectCombos.grid.push(position, element);
+                frozen.push(element);
             }
+            return frozen;
         }
     }
     Control.transformations = Control.defineControls();

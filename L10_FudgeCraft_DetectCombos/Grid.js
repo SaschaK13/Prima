@@ -11,7 +11,6 @@ var L10_FudgeCraft_DetectCombos;
         // private grid: Map<string, Cube> = new Map();
         constructor() {
             super();
-            this.push(L10_FudgeCraft_DetectCombos.fudge.Vector3.ZERO(), new GridElement(new L10_FudgeCraft_DetectCombos.Cube(L10_FudgeCraft_DetectCombos.CUBE_TYPE.GREY, L10_FudgeCraft_DetectCombos.fudge.Vector3.ZERO())));
         }
         push(_position, _element = null) {
             let key = this.toKey(_position);
@@ -31,6 +30,17 @@ var L10_FudgeCraft_DetectCombos;
             if (element)
                 L10_FudgeCraft_DetectCombos.game.removeChild(element.cube);
             return element;
+        }
+        findNeigbors(_of) {
+            let found = [];
+            let offsets = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
+            for (let offset of offsets) {
+                let posNeighbor = L10_FudgeCraft_DetectCombos.ƒ.Vector3.SUM(_of, new L10_FudgeCraft_DetectCombos.ƒ.Vector3(...offset));
+                let neighbor = L10_FudgeCraft_DetectCombos.grid.pull(posNeighbor);
+                if (neighbor)
+                    found.push(neighbor);
+            }
+            return found;
         }
         toKey(_position) {
             let position = _position.map(Math.round);

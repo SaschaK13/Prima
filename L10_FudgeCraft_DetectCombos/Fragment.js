@@ -1,23 +1,23 @@
 "use strict";
 var L10_FudgeCraft_DetectCombos;
 (function (L10_FudgeCraft_DetectCombos) {
-    var fudge = FudgeCore;
-    class Fragment extends fudge.Node {
-        constructor(_shape, _position = fudge.Vector3.ZERO()) {
+    var ƒ = FudgeCore;
+    class Fragment extends ƒ.Node {
+        constructor(_shape, _position = ƒ.Vector3.ZERO()) {
             super("Fragment-Type" + _shape);
-            this.position = new fudge.Vector3(0, 0, 0);
+            this.position = new ƒ.Vector3(0, 0, 0);
             let shape = Fragment.shapes[_shape];
             for (let position of shape) {
                 let type;
                 do {
                     type = Fragment.getRandomEnum(L10_FudgeCraft_DetectCombos.CUBE_TYPE);
                 } while (type == L10_FudgeCraft_DetectCombos.CUBE_TYPE.GREY);
-                let vctPosition = fudge.Vector3.ZERO();
+                let vctPosition = ƒ.Vector3.ZERO();
                 vctPosition.set(position[0], position[1], position[2]);
                 let cube = new L10_FudgeCraft_DetectCombos.Cube(type, vctPosition);
                 this.appendChild(cube);
             }
-            this.addComponent(new fudge.ComponentTransform(fudge.Matrix4x4.TRANSLATION(_position)));
+            this.addComponent(new ƒ.ComponentTransform(ƒ.Matrix4x4.TRANSLATION(_position)));
         }
         static getRandom() {
             let shape = Math.floor(Math.random() * Fragment.shapes.length);
