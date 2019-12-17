@@ -2,8 +2,9 @@
 var L10_FudgeCraft_DetectCombos;
 (function (L10_FudgeCraft_DetectCombos) {
     class GridElement {
-        constructor(_cube = null) {
+        constructor(_cube, _pos) {
             this.cube = _cube;
+            this.pos = _pos;
         }
     }
     L10_FudgeCraft_DetectCombos.GridElement = GridElement;
@@ -33,12 +34,18 @@ var L10_FudgeCraft_DetectCombos;
         }
         findNeigbors(_of) {
             let found = [];
+            let emptyNeighbors = [];
             let offsets = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
             for (let offset of offsets) {
                 let posNeighbor = L10_FudgeCraft_DetectCombos.ƒ.Vector3.SUM(_of, new L10_FudgeCraft_DetectCombos.ƒ.Vector3(...offset));
                 let neighbor = L10_FudgeCraft_DetectCombos.grid.pull(posNeighbor);
-                if (neighbor)
+                if (neighbor) {
                     found.push(neighbor);
+                }
+                else {
+                    let emptyGridElement = new GridElement(posNeighbor);
+                    emptyNeighbors.push(emptyGridElement);
+                }
             }
             return found;
         }

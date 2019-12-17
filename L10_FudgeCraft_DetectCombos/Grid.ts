@@ -1,9 +1,11 @@
 namespace L10_FudgeCraft_DetectCombos {
     export class GridElement {
         public cube: Cube;
+        public pos:ƒ.Vector3
 
-        constructor(_cube: Cube = null) {
+        constructor(_cube?: Cube, _pos?: ƒ.Vector3) {
             this.cube = _cube;
+            this.pos = _pos;
         }
     }
 
@@ -37,12 +39,17 @@ namespace L10_FudgeCraft_DetectCombos {
 
         public findNeigbors(_of: ƒ.Vector3): GridElement[] {
             let found: GridElement[] = [];
+            let emptyNeighbors: GridElement[] = [];
             let offsets: number[][] = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
             for (let offset of offsets) {
                 let posNeighbor: ƒ.Vector3 = ƒ.Vector3.SUM(_of, new ƒ.Vector3(...offset));
                 let neighbor: GridElement = grid.pull(posNeighbor);
-                if (neighbor)
+                if (neighbor) {
                     found.push(neighbor);
+                } else {
+                    let emptyGridElement: GridElement = new GridElement(posNeighbor);
+                    emptyNeighbors.push(emptyGridElement);
+                }
             }
             return found;
         }

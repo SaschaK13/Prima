@@ -81,6 +81,7 @@ namespace L10_FudgeCraft_DetectCombos {
             let frozen: GridElement[] = control.freeze();
             let combos: Combos = new Combos(frozen);
             handleCombos(combos);
+            handleCompression();
             startRandomFragment();
         }
 
@@ -92,14 +93,30 @@ namespace L10_FudgeCraft_DetectCombos {
     }
 
     function handleCombos(_combos: Combos): void {
-        for (let combo of _combos.found)
-            if (combo.length > 2)
+        for (let combo of _combos.found) {
+            if (combo.length > 2) {
                 for (let element of combo) {
                     let mtxLocal: ƒ.Matrix4x4 = element.cube.cmpTransform.local;
                     console.log(element.cube.name, mtxLocal.translation.getMutator());
                     // mtxLocal.scale(ƒ.Vector3.ONE(0.5));
                     grid.pop(mtxLocal.translation);
                 }
+            }     
+        }   
+    }
+
+    function handleCompression(): void {
+        blackHole();
+    }
+
+    function blackHole(): void {
+        ƒ.Debug.log(grid);
+        
+        let elements = grid.entries;
+        for (let element in elements) {
+            let elementPosition = grid.get(element).cube.cmpTransform.local.translation;
+            grid.findNeigbors(elementPosition);
+        }
     }
 
     function move(_transformation: Transformation): void {

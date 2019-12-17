@@ -67,6 +67,7 @@ var L10_FudgeCraft_DetectCombos;
             let frozen = control.freeze();
             let combos = new L10_FudgeCraft_DetectCombos.Combos(frozen);
             handleCombos(combos);
+            handleCompression();
             startRandomFragment();
         }
         let transformation = L10_FudgeCraft_DetectCombos.Control.transformations[_event.code];
@@ -75,14 +76,27 @@ var L10_FudgeCraft_DetectCombos;
         updateDisplay();
     }
     function handleCombos(_combos) {
-        for (let combo of _combos.found)
-            if (combo.length > 2)
+        for (let combo of _combos.found) {
+            if (combo.length > 2) {
                 for (let element of combo) {
                     let mtxLocal = element.cube.cmpTransform.local;
                     console.log(element.cube.name, mtxLocal.translation.getMutator());
                     // mtxLocal.scale(ƒ.Vector3.ONE(0.5));
                     L10_FudgeCraft_DetectCombos.grid.pop(mtxLocal.translation);
                 }
+            }
+        }
+    }
+    function handleCompression() {
+        blackHole();
+    }
+    function blackHole() {
+        L10_FudgeCraft_DetectCombos.ƒ.Debug.log(L10_FudgeCraft_DetectCombos.grid);
+        let elements = L10_FudgeCraft_DetectCombos.grid.entries;
+        for (let element in elements) {
+            let elementPosition = L10_FudgeCraft_DetectCombos.grid.get(element).cube.cmpTransform.local.translation;
+            L10_FudgeCraft_DetectCombos.grid.findNeigbors(elementPosition);
+        }
     }
     function move(_transformation) {
         let animationSteps = 10;
