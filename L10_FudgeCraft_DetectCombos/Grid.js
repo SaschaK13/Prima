@@ -32,7 +32,7 @@ var L10_FudgeCraft_DetectCombos;
                 L10_FudgeCraft_DetectCombos.game.removeChild(element.cube);
             return element;
         }
-        findNeigbors(_of) {
+        findNeighbors(_of, _empty = false) {
             let found = [];
             let emptyNeighbors = [];
             let offsets = [[0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0], [1, 0, 0], [-1, 0, 0]];
@@ -43,11 +43,10 @@ var L10_FudgeCraft_DetectCombos;
                     found.push(neighbor);
                 }
                 else {
-                    let emptyGridElement = new GridElement(posNeighbor);
-                    emptyNeighbors.push(emptyGridElement);
+                    emptyNeighbors.push(posNeighbor);
                 }
             }
-            return found;
+            return _empty ? emptyNeighbors : found;
         }
         toKey(_position) {
             let position = _position.map(Math.round);

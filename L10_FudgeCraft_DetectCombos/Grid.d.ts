@@ -9,7 +9,7 @@ declare namespace L10_FudgeCraft_DetectCombos {
         push(_position: ƒ.Vector3, _element?: GridElement): void;
         pull(_position: ƒ.Vector3): GridElement;
         pop(_position: ƒ.Vector3): GridElement;
-        findNeigbors(_of: ƒ.Vector3): GridElement[];
+        findNeighbors(_of: ƒ.Vector3, _empty?: boolean): GridElement[] | ƒ.Vector3[];
         private toKey;
     }
 }
