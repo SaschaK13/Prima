@@ -37,7 +37,7 @@ var L10_FudgeCraft_DetectCombos;
                 this.recurse(match, _combo);
         }
         findNeigborsOfSameColor(_element) {
-            let all = L10_FudgeCraft_DetectCombos.grid.findNeigbors(_element.cube.cmpTransform.local.translation);
+            let all = L10_FudgeCraft_DetectCombos.grid.findNeighbors(_element.cube.cmpTransform.local.translation);
             let found = all.filter(_neighbor => (_neighbor.cube.name == _element.cube.name));
             return found;
         }

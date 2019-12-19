@@ -81,7 +81,7 @@ namespace L10_FudgeCraft_DetectCombos {
             let frozen: GridElement[] = control.freeze();
             let combos: Combos = new Combos(frozen);
             handleCombos(combos);
-            handleCompression();
+            //handleCompression();
             startRandomFragment();
         }
 
@@ -110,13 +110,36 @@ namespace L10_FudgeCraft_DetectCombos {
     }
 
     function blackHole(): void {
-        ƒ.Debug.log(grid);
-        
-        let elements = grid.entries;
-        for (let element in elements) {
-            let elementPosition = grid.get(element).cube.cmpTransform.local.translation;
-            grid.findNeigbors(elementPosition);
+        grid.forEach((element: GridElement, key: string) => {
+            let elementPosition: ƒ.Vector3  = grid.get(key).cube.cmpTransform.local.translation;
+            let emptyNeighbors: ƒ.Vector3[] = grid.findNeighbors(elementPosition, true) as ƒ.Vector3[];
+            getPositionOfNearestCubeToNucleus(emptyNeighbors);
+
+            
+            ƒ.Debug.log(emptyNeighbors);
+        });
+    }
+
+    function getPositionOfNearestCubeToNucleus(_emptyNeighbors: ƒ.Vector3[]): ƒ.Vector3 {
+        let nearestPosition: ƒ.Vector3 = _emptyNeighbors[0];
+        let nucleus: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
+        let nearestDistance: number = getDistanceBetweenTwoPoints(nearestPosition, nucleus);
+
+        for (let currentPosition of _emptyNeighbors) {
+            let currentDistance: number = getDistanceBetweenTwoPoints(currentPosition, nucleus);
+            if (currentDistance < nearestDistance) {
+                nearestDistance = currentDistance;
+                nearestPosition = currentPosition;
+            }
         }
+        return nearestPosition;
+    }
+
+    function getDistanceBetweenTwoPoints(_a: ƒ.Vector3, _b: ƒ.Vector3): number {
+        let connectionVector: ƒ.Vector3 = new ƒ.Vector3(_b.x - _a.x, _b.y - _a.y, _b.z - _a.z);
+        let distance: number = Math.sqrt((connectionVector.x ** 2) + (connectionVector.y ** 2 ) + (connectionVector.z ** 2));
+
+        return distance;
     }
 
     function move(_transformation: Transformation): void {
@@ -132,7 +155,7 @@ namespace L10_FudgeCraft_DetectCombos {
         if (Object.keys(timers).length > 0)
             return;
 
-        let collisions: GridElement[] = control.checkCollisions(move);
+        let collisions: Collision[] = control.checkCollisions(move);
         if (collisions.length > 0)
             return;
 

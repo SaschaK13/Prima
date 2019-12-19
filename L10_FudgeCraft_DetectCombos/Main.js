@@ -91,12 +91,30 @@ var L10_FudgeCraft_DetectCombos;
         blackHole();
     }
     function blackHole() {
-        L10_FudgeCraft_DetectCombos.ƒ.Debug.log(L10_FudgeCraft_DetectCombos.grid);
-        let elements = L10_FudgeCraft_DetectCombos.grid.entries;
-        for (let element in elements) {
-            let elementPosition = L10_FudgeCraft_DetectCombos.grid.get(element).cube.cmpTransform.local.translation;
-            L10_FudgeCraft_DetectCombos.grid.findNeigbors(elementPosition);
+        L10_FudgeCraft_DetectCombos.grid.forEach((element, key) => {
+            let elementPosition = L10_FudgeCraft_DetectCombos.grid.get(key).cube.cmpTransform.local.translation;
+            let emptyNeighbors = L10_FudgeCraft_DetectCombos.grid.findNeighbors(elementPosition, true);
+            getPositionOfNearestCubeToNucleus(emptyNeighbors);
+            L10_FudgeCraft_DetectCombos.ƒ.Debug.log(emptyNeighbors);
+        });
+    }
+    function getPositionOfNearestCubeToNucleus(_emptyNeighbors) {
+        let nearestPosition = _emptyNeighbors[0];
+        let nucleus = new L10_FudgeCraft_DetectCombos.ƒ.Vector3(0, 0, 0);
+        let nearestDistance = getDistanceBetweenTwoPoints(nearestPosition, nucleus);
+        for (let currentPosition of _emptyNeighbors) {
+            let currentDistance = getDistanceBetweenTwoPoints(currentPosition, nucleus);
+            if (currentDistance < nearestDistance) {
+                nearestDistance = currentDistance;
+                nearestPosition = currentPosition;
+            }
         }
+        return nearestPosition;
+    }
+    function getDistanceBetweenTwoPoints(_a, _b) {
+        let connectionVector = new L10_FudgeCraft_DetectCombos.ƒ.Vector3(_b.x - _a.x, _b.y - _a.y, _b.z - _a.z);
+        let distance = Math.sqrt((connectionVector.x ** 2) + (connectionVector.y ** 2) + (connectionVector.z ** 2));
+        return distance;
     }
     function move(_transformation) {
         let animationSteps = 10;
