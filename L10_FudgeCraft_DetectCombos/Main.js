@@ -71,8 +71,9 @@ var L10_FudgeCraft_DetectCombos;
             startRandomFragment();
         }
         let transformation = L10_FudgeCraft_DetectCombos.Control.transformations[_event.code];
-        if (transformation)
+        if (transformation) {
             move(transformation);
+        }
         updateDisplay();
     }
     function handleCombos(_combos) {
@@ -91,11 +92,17 @@ var L10_FudgeCraft_DetectCombos;
         blackHole();
     }
     function blackHole() {
+        let nucleus = new L10_FudgeCraft_DetectCombos.ƒ.Vector3(0, 0, 0);
         L10_FudgeCraft_DetectCombos.grid.forEach((element, key) => {
             let elementPosition = L10_FudgeCraft_DetectCombos.grid.get(key).cube.cmpTransform.local.translation;
             let emptyNeighbors = L10_FudgeCraft_DetectCombos.grid.findNeighbors(elementPosition, true);
-            getPositionOfNearestCubeToNucleus(emptyNeighbors);
+            let nearestPosition = getPositionOfNearestCubeToNucleus(emptyNeighbors);
             L10_FudgeCraft_DetectCombos.ƒ.Debug.log(emptyNeighbors);
+            if (getDistanceBetweenTwoPoints(nearestPosition, nucleus) < getDistanceBetweenTwoPoints(elementPosition, nucleus)) {
+                L10_FudgeCraft_DetectCombos.grid.pop(elementPosition);
+                L10_FudgeCraft_DetectCombos.grid.push(nearestPosition, element);
+                blackHole();
+            }
         });
     }
     function getPositionOfNearestCubeToNucleus(_emptyNeighbors) {

@@ -81,13 +81,14 @@ namespace L10_FudgeCraft_DetectCombos {
             let frozen: GridElement[] = control.freeze();
             let combos: Combos = new Combos(frozen);
             handleCombos(combos);
-            //handleCompression();
+            handleCompression();
             startRandomFragment();
         }
 
         let transformation: Transformation = Control.transformations[_event.code];
-        if (transformation)
+        if (transformation) {
             move(transformation);
+        }
 
         updateDisplay();
     }
@@ -110,13 +111,19 @@ namespace L10_FudgeCraft_DetectCombos {
     }
 
     function blackHole(): void {
+        let nucleus: ƒ.Vector3 = new ƒ.Vector3(0, 0, 0);
         grid.forEach((element: GridElement, key: string) => {
             let elementPosition: ƒ.Vector3  = grid.get(key).cube.cmpTransform.local.translation;
             let emptyNeighbors: ƒ.Vector3[] = grid.findNeighbors(elementPosition, true) as ƒ.Vector3[];
-            getPositionOfNearestCubeToNucleus(emptyNeighbors);
+            let nearestPosition: ƒ.Vector3 = getPositionOfNearestCubeToNucleus(emptyNeighbors);
 
-            
             ƒ.Debug.log(emptyNeighbors);
+            if (getDistanceBetweenTwoPoints(nearestPosition, nucleus) < getDistanceBetweenTwoPoints(elementPosition, nucleus)) {
+                grid.pop(elementPosition);
+                grid.push(nearestPosition, element);
+
+                blackHole();
+            }
         });
     }
 
